@@ -11,7 +11,7 @@ class customer extends Model
 
     protected $fillable = [
         'id',
-        'session_code',
+        'session_id',
         'name',
         'date_of_birth',
         'phone',

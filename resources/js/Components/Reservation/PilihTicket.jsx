@@ -2,12 +2,13 @@ import React from 'react';
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "../../utils/theme";
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-import {useMediaQuery, Box, Typography, Paper, Card, Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, AppBar, Toolbar, IconButton, Slide, Divider, TextField, InputAdornment, Chip, Checkbox, FormControlLabel, iconButtonClasses} from '@mui/material';
+import {useMediaQuery, Box, Typography, Paper, Card, Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, AppBar, Toolbar, IconButton, Slide, Divider, TextField, InputAdornment, Chip, Checkbox, Stack} from '@mui/material';
 import {Place, CalendarMonth, AccessTime, Remove, Add, Close, ShoppingCart, AccountCircle, Phone, Email, LocationOn} from '@mui/icons-material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { EncryptStorage } from 'encrypt-storage';
 // import dayjs from 'dayjs';
 
 //import locale
@@ -23,13 +24,19 @@ import "swiper/css/scrollbar";
 
 import { FreeMode, Scrollbar, Mousewheel } from "swiper";
 
-import {Helmet} from "react-helmet";
-
 import {media} from '../../assets/images';
 import {mediaBanner} from '../../assets/images/banner';
 
+const StockAlert = React.forwardRef(function StockAlert(props, ref) {
+    return <Alert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
+});
+
+export const encryptStorage = new EncryptStorage('@encryptedByZam', {
+    // storageType: 'sessionStorage',
 });
 
 export default function App(props) {
@@ -39,6 +46,7 @@ export default function App(props) {
     const initialMountRef = React.useRef(true);
 
     const [tickets, setTickets] = React.useState("");
+    // get ticket
     React.useEffect(() => {
         axios.post('/api/get-tickets-by-event', {
             event_id: props.selectedEvent.id,
@@ -89,6 +97,7 @@ export default function App(props) {
     const [swiper, setSwiper] = React.useState(0);
     const slideTo = (index) => swiper.slideTo(index);
 
+    // swiper mobile style
     const conditionalSwiperMobileStyle = () => {
         let style = {};
         switch (swiper.activeIndex) {
@@ -283,22 +292,13 @@ export default function App(props) {
       setOpenDialogTNC(false);
     };
 
+    const [midtransSnapToken, setMidtransSnapToken] = React.useState(false);
     const handleBayar = () => {
         //
-        axios.post('/api/create-reservation', {
-            event_id: props.selectedEvent.id,
-            session_code: 1,
-            name: name,
-            dateOfBirth: dateOfBirth,
-            phone: phone,
-            email: email,
-            address: address,
-            ticketOrder: props.selectedTicket,
-        })
-        .then((response) => {
+        if(midtransSnapToken){
             //
             window.snap.pay(
-                response.data.token,
+                midtransSnapToken,
                 {
                     onSuccess: function(result){
                         console.log('success');console.log(result);
@@ -314,10 +314,42 @@ export default function App(props) {
                     }
                 }
             )
-        }).catch((error) => {
-            //
-            console.log(error);
-        });
+        } else {
+            axios.post('/api/create-reservation', {
+                event_id: props.selectedEvent.id,
+                session_id: props.sessionID,
+                name: name,
+                dateOfBirth: dateOfBirth,
+                phone: phone,
+                email: email,
+                address: address,
+                ticketOrder: props.selectedTicket,
+            })
+            .then((response) => {
+                //
+                setMidtransSnapToken(response.data.token);
+                window.snap.pay(
+                    response.data.token,
+                    {
+                        onSuccess: function(result){
+                            console.log('success');console.log(result);
+                        },
+                        onPending: function(result){
+                            console.log('pending');console.log(result);
+                        },
+                        onError: function(result){
+                            console.log('error');console.log(result);
+                        },
+                        onClose: function(){
+                            console.log('customer closed the popup without finishing the payment');
+                        }
+                    }
+                )
+            }).catch((error) => {
+                //
+                console.log(error);
+            });
+        }
     }
 
     const [dialogBayar, setDialogBayar] = React.useState(false);
@@ -476,6 +508,7 @@ export default function App(props) {
                                     autoComplete='off'
                                     label="Nomor Telepon"
                                     placeholder='08993011870'
+                                    type='tel'
                                     InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -501,6 +534,7 @@ export default function App(props) {
                                     autoComplete='off'
                                     label="Email"
                                     placeholder='yourname@mail.com'
+                                    type='email'
                                     helperText={emailInvalidMessage}
                                     error={!emailValid}
                                     onCut={handlePreventCopyPaste}
@@ -531,6 +565,7 @@ export default function App(props) {
                                     autoComplete='off'
                                     label="Email Confirmation"
                                     placeholder='yourname@mail.com'
+                                    type='email'
                                     helperText={emailConfirmationInvalidMessage}
                                     error={!emailConfirmationValid}
                                     onCut={handlePreventCopyPaste}
@@ -1513,7 +1548,7 @@ export default function App(props) {
                                     borderRadius: '20px',
                                 }}>
                                 <img
-                                    src={props.selectedEvent.image ? `http://127.0.0.1:8000${props.selectedEvent.image}` : mediaBanner[1]}
+                                    src={props.selectedEvent.image ? `${import.meta.env.VITE_MAIN_URL+props.selectedEvent.image}` : mediaBanner[1]}
                                     alt="banner_salokafest"
                                     loading="lazy"
                                     style={
@@ -2009,6 +2044,7 @@ export default function App(props) {
                                         label="Nomor Telepon"
                                         placeholder='08993011870'
                                         size="small"
+                                        type='tel'
                                         InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
@@ -2035,6 +2071,7 @@ export default function App(props) {
                                         label="Email"
                                         placeholder='yourname@mail.com'
                                         size="small"
+                                        type='email'
                                         helperText={emailInvalidMessage}
                                         error={!emailValid}
                                         InputProps={{
@@ -2063,6 +2100,7 @@ export default function App(props) {
                                         label="Email Confirmation"
                                         placeholder='yourname@mail.com'
                                         size="small"
+                                        type='email'
                                         helperText={emailConfirmationInvalidMessage}
                                         error={!emailConfirmationValid}
                                         InputProps={{
@@ -2266,7 +2304,7 @@ export default function App(props) {
                                     fontSize: '18px',
                                     fontWeight: 600
                                 }}>
-                                    Ketentuan Penggunaan E-Ticket Tiketapasaja.Com :
+                                    Ketentuan Penggunaan E-Ticket Saloka Theme Park :
                                 </Typography>
                             </Box>
 
@@ -2283,7 +2321,7 @@ export default function App(props) {
                                     fontWeight: 400,
                                     lineHeight: 1.5,
                                 }}>
-                                    E-ticket Tiketapasaja.com yang sah adalah e-ticket yang dibeli dengan tata cara yang telah ditentukan yaitu pembelian secara online melalui transaksi elektronik pada website www.tiketapasaja.com, ataupun autorized partner resmi.
+                                    E-ticket Saloka Theme Park yang sah adalah e-ticket yang dibeli dengan tata cara yang telah ditentukan yaitu pembelian secara online melalui transaksi elektronik pada website www.tiketapasaja.com, ataupun autorized partner resmi.
                                     Pembeli dianjurkan untuk mencetak e-ticket satu kali untuk satu id transaksi yang dibelinya, untuk menghindari resiko penggunaan e-ticket oleh pihak lain.
                                     E-ticket menggunakan barcode dan berlaku untuk satu kali penggunaan.
                                 </Typography>
@@ -2296,7 +2334,7 @@ export default function App(props) {
                                     lineHeight: 1.5,
                                 }}>
                                     Penyelenggara berhak untuk memproses dan menuntut secara hukum sesuai dengan ketentuan perundangan yang berlaku baik secara perdata maupun pidana terhadap orang-orang yang memperoleh e-ticket dengan cara yang tidak sah termasuk tapi tidak terbatas dengan cara melakukan pemalsuan atau menggandakan e-ticket yang sah atau memperoleh e-ticket dengan cara yang tidak sesuai.
-                                    Dilarang menggandakan e-ticket. Penyelenggara dan Tiketapasaja.Com tidak bertanggungjawab atas kelalaian pembeli tiket yang mengakibatkan e-ticket jatuh ke tangan orang lain (dalam penguasaan orang lain) untuk dipergunakan sebagai tanda masuk tempat pertunjukan yang menghilangkan hak dari pembeli tiket.
+                                    Dilarang menggandakan e-ticket. Penyelenggara dan Saloka Theme Park tidak bertanggungjawab atas kelalaian pembeli tiket yang mengakibatkan e-ticket jatuh ke tangan orang lain (dalam penguasaan orang lain) untuk dipergunakan sebagai tanda masuk tempat pertunjukan yang menghilangkan hak dari pembeli tiket.
                                     E-ticket tidak dapat ditukar dan tidak dapat diuangkan kembali.
                                 </Typography>
                                 <Typography
@@ -2308,7 +2346,7 @@ export default function App(props) {
                                     lineHeight: 1.5,
                                 }}>
                                     Penukaran tiket asli yang diwakilkan oleh orang lain harus disertai dengan surat kuasa dan fotocopy identitas pembeli.
-                                    Informasi waktu dan tempat penukaran tiket asli akan selalu diupdate di instagram @tiketapasaja
+                                    Informasi waktu dan tempat penukaran tiket asli akan selalu diupdate di instagram @salokathemepark
                                     Tiket yang sah adalah e-ticket yang sudah ditukarkan dengan tiket asli sebagai tanda masuk acara.
                                 </Typography>
                                 <Typography

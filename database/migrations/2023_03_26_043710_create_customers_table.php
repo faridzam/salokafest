@@ -15,13 +15,15 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->text('session_code');
+            $table->unsignedBigInteger('session_id');
             $table->string('name');
             $table->date('date_of_birth');
             $table->string('phone');
             $table->string('email');
             $table->string('address');
             $table->timestamps();
+
+            $table->foreign('session_id')->references('id')->on('session_queues');
         });
     }
 

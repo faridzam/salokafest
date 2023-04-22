@@ -14,7 +14,7 @@ import "swiper/css/pagination";
 import "./reservation.css";
 import customStyle from "./SwiperPilihEvent.module.css";
 
-import {mediaEvent} from "../../assets/images/events";
+import {getImageByID} from "../../assets/images/events";
 import {mediaBanner} from '../../assets/images/banner';
 
 // import required modules
@@ -174,7 +174,8 @@ export default function App(props) {
                                                 ?
                                                 <img
                                                 style={hovered === events[index].id ? hoveredImageStyle : unhoveredImageStyle}
-                                                src={'http://localhost:8000'+events[index].image}
+                                                // src={import.meta.env.VITE_MAIN_URL+events[index].image}
+                                                src={getImageByID(events[index].id).image}
                                                 alt="event_image" />
                                                 :
                                                 <img
@@ -326,7 +327,8 @@ export default function App(props) {
                                             ?
                                             <img
                                             style={hovered === events[index].id ? hoveredImageStyle : unhoveredImageStyle}
-                                            src={'http://localhost:8000'+events[index].image}
+                                            // src={import.meta.env.VITE_MAIN_URL+events[index].image}
+                                            src={getImageByID(events[index].id).image}
                                             alt="event_image" />
                                             :
                                             <img
