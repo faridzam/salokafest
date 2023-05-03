@@ -26,6 +26,7 @@ import { FreeMode, Scrollbar, Mousewheel } from "swiper";
 
 import {media} from '../../assets/images';
 import {mediaBanner} from '../../assets/images/banner';
+import {mediaSold} from '../../assets/images/soldOutLabel';
 
 const StockAlert = React.forwardRef(function StockAlert(props, ref) {
     return <Alert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -455,7 +456,7 @@ export default function App(props) {
                                     value={name}
                                     onChange={value => handleChangeName(value)}
                                     autoComplete='off'
-                                    label="Nama"
+                                    label="Nama Sesuai ID/KTP"
                                     placeholder='Loka'
                                     InputProps={{
                                     startAdornment: (
@@ -484,7 +485,7 @@ export default function App(props) {
                                     sx={{
                                         width: '100%'
                                     }}
-                                    label="tanggal lahir"
+                                    label="Tanggal Lahir"
                                     placeholder="31 Maret 1997"
                                     slotProps={{
                                         textField: {
@@ -507,7 +508,7 @@ export default function App(props) {
                                     onChange={value => handleChangePhone(value)}
                                     autoComplete='off'
                                     label="Nomor Telepon"
-                                    placeholder='08993011870'
+                                    placeholder='08XXXXXXXXXX'
                                     type='tel'
                                     InputProps={{
                                     startAdornment: (
@@ -654,7 +655,7 @@ export default function App(props) {
                                             <Typography
                                             sx={{
                                                 fontWeight: 500
-                                            }}>Rp. {props.totalBill.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                                            }}>Rp. {(props.totalBill+6000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                                         </Box>
 
                                         {!canSubmit
@@ -694,6 +695,17 @@ export default function App(props) {
 
                                     </Box>
                                 </Card>
+                                <Box
+                                sx={{
+                                    marginX: '30px',
+                                }}>
+                                    <Typography
+                                    sx={{
+                                        fontSize: '12px',
+                                    }}>
+                                        *sudah termasuk biaya admin Rp. 6,000
+                                    </Typography>
+                                </Box>
                             </Grid>
                         </Grid>
                         {/* e-ticket display */}
@@ -748,7 +760,7 @@ export default function App(props) {
                                             height: '100%'
                                         }}>
                                             <img
-                                            src={media[13]}
+                                            src={media[20]}
                                             alt="logo_salokafest"
                                             loading="lazy"
                                             style={{
@@ -987,9 +999,9 @@ export default function App(props) {
                                                 color: '#fff',
                                                 fontSize: '12px',
                                                 fontWeight: 500,
-                                                letterSpacing: 1.5
-                                            }}
-                                            label={"INV/20230622/SF/XXXXXX"}></Chip>
+                                                letterSpacing: 1.5,
+                                                width: '150px',
+                                            }}></Chip>
                                         </Divider>
                                     </Box>
                                     <Box
@@ -1008,27 +1020,10 @@ export default function App(props) {
                                 spacing={0}
                                 sx={{
                                     display: 'flex',
-                                    width: '100%',
-                                    justifyContent: 'center',
+                                    width: '80%',
+                                    justifyContent: 'flex-start',
                                     alignItems: 'center'
                                 }}>
-                                    <Box
-                                    sx={{
-                                        height: '150px',
-                                        width: '150px',
-                                    }}>
-                                        <img
-                                        src={media[18]}
-                                        alt="logo_salokafest"
-                                        loading="lazy"
-                                        style={{
-                                            layout: 'fill',
-                                            objectFit: 'cover',
-                                            objectPosition: 'center',
-                                            width: '100%',
-                                            height: '100%',
-                                        }}></img>
-                                    </Box>
                                     <Grid
                                     container={true}
                                     direction="column"
@@ -1166,7 +1161,11 @@ export default function App(props) {
                         sx={{
                             width: '100%',
                         }}>
-                            <Typography
+                            <section
+                            style={{ fontSize: '12px'}}
+                            dangerouslySetInnerHTML={{__html: props.selectedEvent.description}}>
+                            </section>
+                            {/* <Typography
                             paragraph={true}
                             textAlign={'justify'}
                             sx={{
@@ -1176,7 +1175,7 @@ export default function App(props) {
                                 color: '#999'
                             }}>
                                 {props.selectedEvent.description.length > 500 ? props.selectedEvent.description.substring(0, 500)+"..." : props.selectedEvent.description}
-                            </Typography>
+                            </Typography> */}
                         </Box>
                         <Box
                         sx={{
@@ -1301,205 +1300,350 @@ export default function App(props) {
                         alignItems: 'flex-end',
                         borderLeft: '2px solid #ddd'
                     }}>
-                        <Grid
-                        container={true}
-                        direction="column"
-                        spacing={0}
+                        {
+                            props.selectedEvent.id === 1
+                            ?
+                            <Grid
+                            container={true}
+                            direction="row"
+                            spacing={0}
+                            sx={{
+                                display: 'flex',
+                                width: '100%',
+                                height: '100%',
+                                paddingX: '10px',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}>
+                                <Box
+                                sx={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    height: '100%',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                    <Button
+                                    onClick={() => window.location.href = 'https://salokapark.com/ticket/pilih-ticket'}
+                                    variant='contained'
+                                    sx={{
+                                        borderRadius: '30px',
+                                        height: '50px',
+                                    }}>
+                                        <Typography
+                                        sx={{
+                                            fontSize: '18px',
+                                            fontWeight: 600
+                                        }}>Lanjutkan Pembelian</Typography>
+                                    </Button>
+                                </Box>
+                            </Grid>
+                            :
+                            <Grid
+                            container={true}
+                            direction="column"
+                            spacing={0}
+                            sx={{
+                                display: 'flex',
+                                width: '100%',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}>
+                                {tickets_content.map((index) => (
+                                    <Paper
+                                    key={`ticket-by-event-${index}`}
+                                    elevation={2}
+                                    sx={
+                                        tickets[index].stock_available > 0
+                                        ?
+                                        {
+                                            marginY: '5px',
+                                            width: '100%',
+                                            borderRadius: '10px',
+                                        }
+                                        :
+                                        {
+                                            marginY: '5px',
+                                            width: '100%',
+                                            borderRadius: '10px',
+                                            backgroundColor: '#ddd'
+                                        }
+                                    }>
+                                        {
+                                            props.selectedEvent.id === 1
+                                            ?
+                                            null
+                                            :
+                                            <Grid
+                                            container={true}
+                                            direction="row"
+                                            spacing={0}
+                                            sx={{
+                                                display: 'flex',
+                                                width: '100%',
+                                                paddingX: '10px',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }}>
+                                                <Grid
+                                                container={true}
+                                                direction="column"
+                                                spacing={0}
+                                                sx={{
+                                                    display: 'flex',
+                                                    width: '50%',
+                                                    paddingX: '10px',
+                                                    paddingY: '5px',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'space-between',
+                                                }}>
+                                                    <Box>
+                                                        <Typography
+                                                        sx={
+                                                            tickets[index].stock_available > 0
+                                                            ?
+                                                            {
+                                                                fontSize: '16px',
+                                                                fontWeight: 600
+                                                            }
+                                                            :
+                                                            {
+                                                                fontSize: '16px',
+                                                                fontWeight: 600,
+                                                                color: '#666',
+                                                            }
+                                                        }>
+                                                            {tickets[index].name}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box>
+                                                        <Typography
+                                                        sx={
+                                                            tickets[index].stock_available > 0
+                                                            ?
+                                                            {
+                                                                fontSize: '10px',
+                                                                fontWeight: 400
+                                                            }
+                                                            :
+                                                            {
+                                                                fontSize: '10px',
+                                                                fontWeight: 400,
+                                                                color: '#666'
+                                                            }
+                                                        }>
+                                                            {tickets[index].description}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Divider
+                                                    sx={
+                                                        tickets[index].stock_available > 0
+                                                        ?
+                                                        {
+                                                            background: '#000'
+                                                        }
+                                                        :
+                                                        {
+                                                            background: '#666'
+                                                        }
+                                                    }/>
+                                                    <Box
+                                                    sx={{
+                                                        width: '100%',
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'space-between',
+                                                    }}>
+                                                        {/* <Typography
+                                                        sx={{
+                                                            fontSize: '12px',
+                                                            fontWeight: 400
+                                                        }}>
+                                                            stock: {props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).stock_available.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : tickets[index].stock_available.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                                        </Typography> */}
+                                                        <Typography
+                                                        sx={
+                                                            tickets[index].stock_available > 0
+                                                            ?
+                                                            {
+                                                                fontSize: '12px',
+                                                                fontWeight: 400
+                                                            }
+                                                            :
+                                                            {
+                                                                fontSize: '12px',
+                                                                fontWeight: 400,
+                                                                color: '#666'
+                                                            }
+                                                        }>
+                                                            Rp. {tickets[index].price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                                        </Typography>
+                                                    </Box>
+                                                </Grid>
+                                                {
+                                                    tickets[index].stock_available > 0
+                                                    ?
+                                                    <Grid
+                                                    container={true}
+                                                    direction="row"
+                                                    spacing={0}
+                                                    sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                    }}>
+                                                        <Fab
+                                                        onClick={() => handleSubTicket(tickets[index])}
+                                                        size="small"
+                                                        variant='outlined'
+                                                        color='primary'
+                                                        sx={{
+                                                            minWidth: '30px',
+                                                            width: '30px',
+                                                            minHeight: '30px',
+                                                            height: '30px',
+                                                            marginX: '20px'
+                                                        }}>
+                                                            <Remove
+                                                            sx={{
+                                                                margin: 0,
+                                                                padding: 0,
+                                                            }}/>
+                                                        </Fab>
+                                                        <Typography
+                                                        sx={{
+                                                            fontSize: '24px',
+                                                            fontWeight: 600
+                                                        }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
+                                                        <Fab
+                                                        onClick={() => handleAddTicket(tickets[index])}
+                                                        size="small"
+                                                        variant='outlined'
+                                                        color='primary'
+                                                        sx={{
+                                                            minWidth: '30px',
+                                                            width: '30px',
+                                                            minHeight: '30px',
+                                                            height: '30px',
+                                                            marginX: '20px'
+                                                        }}>
+                                                            <Add
+                                                            sx={{
+                                                                margin: 0,
+                                                                padding: 0,
+                                                            }}/>
+                                                        </Fab>
+                                                    </Grid>
+                                                    :
+                                                    <Box
+                                                    sx={{
+                                                        maxHeight: '100%',
+                                                        paddingRight: '30px',
+                                                    }}>
+                                                        <img
+                                                        src={mediaSold[1]}
+                                                        style={{
+                                                            objectFit: 'contain',
+                                                            height: '100px',
+                                                        }}></img>
+                                                    </Box>
+                                                }
+                                            </Grid>
+                                        }
+                                    </Paper>
+                                ))}
+                            </Grid>
+                        }
+                        <Box
                         sx={{
                             display: 'flex',
-                            width: '100%',
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                            flexDirection: 'column',
+                            flexWrap: 'wrap',
                         }}>
-                            {tickets_content.map((index) => (
-                                <Paper
-                                key={`ticket-by-event-${index}`}
-                                elevation={2}
-                                sx={{
-                                    marginY: '5px',
-                                    width: '100%',
-                                    borderRadius: '10px',
-                                }}>
-                                    <Grid
-                                    container={true}
-                                    direction="row"
-                                    spacing={0}
-                                    sx={{
-                                        display: 'flex',
-                                        width: '100%',
-                                        paddingX: '10px',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}>
-                                        <Grid
-                                        container={true}
-                                        direction="column"
-                                        spacing={0}
-                                        sx={{
-                                            display: 'flex',
-                                            width: '50%',
-                                            paddingX: '10px',
-                                            paddingY: '5px',
-                                            justifyContent: 'center',
-                                            alignItems: 'space-between',
-                                        }}>
-                                            <Box>
-                                                <Typography
-                                                sx={{
-                                                    fontSize: '16px',
-                                                    fontWeight: 600
-                                                }}>
-                                                    {tickets[index].name}
-                                                </Typography>
-                                            </Box>
-                                            <Box>
-                                                <Typography
-                                                sx={{
-                                                    fontSize: '10px',
-                                                    fontWeight: 400
-                                                }}>
-                                                    {tickets[index].description}
-                                                </Typography>
-                                            </Box>
-                                            <Divider/>
-                                            <Box
-                                            sx={{
-                                                width: '100%',
-                                                display: 'flex',
-                                                flexDirection: 'row',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'space-between',
-                                            }}>
-                                                <Typography
-                                                sx={{
-                                                    fontSize: '12px',
-                                                    fontWeight: 400
-                                                }}>
-                                                    stock: {props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).stock_available.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : tickets[index].stock_available.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                                </Typography>
-                                                <Typography
-                                                sx={{
-                                                    fontSize: '12px',
-                                                    fontWeight: 400
-                                                }}>
-                                                    Rp. {tickets[index].price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                                </Typography>
-                                            </Box>
-                                        </Grid>
-                                        <Grid
-                                        container={true}
-                                        direction="row"
-                                        spacing={0}
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                        }}>
-                                            <Fab
-                                            onClick={() => handleSubTicket(tickets[index])}
-                                            size="small"
-                                            variant='outlined'
-                                            color='primary'
-                                            sx={{
-                                                minWidth: '30px',
-                                                width: '30px',
-                                                minHeight: '30px',
-                                                height: '30px',
-                                                marginX: '20px'
-                                            }}>
-                                                <Remove
-                                                sx={{
-                                                    margin: 0,
-                                                    padding: 0,
-                                                }}/>
-                                            </Fab>
-                                            <Typography
-                                            sx={{
-                                                fontSize: '24px',
-                                                fontWeight: 600
-                                            }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
-                                            <Fab
-                                            onClick={() => handleAddTicket(tickets[index])}
-                                            size="small"
-                                            variant='outlined'
-                                            color='primary'
-                                            sx={{
-                                                minWidth: '30px',
-                                                width: '30px',
-                                                minHeight: '30px',
-                                                height: '30px',
-                                                marginX: '20px'
-                                            }}>
-                                                <Add
-                                                sx={{
-                                                    margin: 0,
-                                                    padding: 0,
-                                                }}/>
-                                            </Fab>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
-                            ))}
-                        </Grid>
                             <Card
                             elevation={5}
                             sx={{
                                 borderRadius: '30px'
                             }}>
-                                <Box
-                                sx={{
-                                    width: '300px',
-                                    height: '50px',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                }}>
+                                {
+                                    props.selectedEvent.id !== 1
+                                    ?
                                     <Box
                                     sx={{
-                                        marginLeft: '10px'
+                                        width: '300px',
+                                        height: '50px',
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
                                     }}>
-                                        <Typography
+                                        <Box
                                         sx={{
-                                            fontWeight: 500
-                                        }}>Rp. {props.totalBill.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                                            marginLeft: '10px'
+                                        }}>
+                                            <Typography
+                                            sx={{
+                                                fontWeight: 500
+                                            }}>{props.totalBill === 0 ? `Rp. 0`: `Rp. ${(props.totalBill+6000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Typography>
+                                        </Box>
+
+                                        {props.totalBill <= 0
+                                            ?
+                                            <Button
+                                            disabled
+                                            key={"checkout-button-enabled"}
+                                            variant='contained'
+                                            sx={{
+                                                borderRadius: '30px',
+                                                height: '100%',
+                                            }}>
+                                                <Typography
+                                                sx={{
+                                                    fontSize: '18px',
+                                                    fontWeight: 600
+                                                }}>Checkout</Typography>
+                                            </Button>
+                                            :
+                                            <Button
+                                            onClick={() => handleOpenDialogBayar()}
+                                            key={"checkout-button-disabled"}
+                                            variant='contained'
+                                            sx={{
+                                                borderRadius: '30px',
+                                                height: '100%',
+                                            }}>
+                                                <Typography
+                                                sx={{
+                                                    fontSize: '18px',
+                                                    fontWeight: 600
+                                                }}>Checkout</Typography>
+                                            </Button>
+                                        }
+
                                     </Box>
-
-                                    {props.totalBill <= 0
-                                        ?
-                                        <Button
-                                        disabled
-                                        key={"checkout-button-enabled"}
-                                        variant='contained'
-                                        sx={{
-                                            borderRadius: '30px',
-                                            height: '100%',
-                                        }}>
-                                            <Typography
-                                            sx={{
-                                                fontSize: '18px',
-                                                fontWeight: 600
-                                            }}>Checkout</Typography>
-                                        </Button>
-                                        :
-                                        <Button
-                                        onClick={() => handleOpenDialogBayar()}
-                                        key={"checkout-button-disabled"}
-                                        variant='contained'
-                                        sx={{
-                                            borderRadius: '30px',
-                                            height: '100%',
-                                        }}>
-                                            <Typography
-                                            sx={{
-                                                fontSize: '18px',
-                                                fontWeight: 600
-                                            }}>Checkout</Typography>
-                                        </Button>
-                                    }
-
-                                </Box>
+                                    :
+                                    null
+                                }
                             </Card>
+                            {
+                                props.selectedEvent.id !== 1
+                                ?
+                                <Box
+                                sx={{
+                                    marginLeft: '20px',
+                                }}>
+                                    <Typography
+                                    sx={{
+                                        fontSize: '12px'
+                                    }}>
+                                        *admin fee Rp. 6,000
+                                    </Typography>
+                                </Box>
+                                :
+                                null
+                            }
+                        </Box>
                     </Grid>
                 </Grid>
                 :
@@ -1541,7 +1685,7 @@ export default function App(props) {
                                 justifyContent: 'flex-start',
                                 alignItems: 'flex-start'
                             }}>
-                                <Box
+                                {/* <Box
                                 sx={{
                                     width: '100%',
                                     overflow: 'hidden',
@@ -1561,7 +1705,7 @@ export default function App(props) {
                                             transition: 'all .5s ease-in-out',
                                         }
                                     }></img>
-                                </Box>
+                                </Box> */}
                                 <Box
                                 sx={{
                                     width: '100%',
@@ -1583,7 +1727,7 @@ export default function App(props) {
                                     <Typography
                                     sx={{
                                         letterSpacing: 0.15,
-                                        fontSize: '16px',
+                                        fontSize: '14px',
                                         fontWeight: 500,
                                         color: '#999'
                                     }}>
@@ -1698,38 +1842,92 @@ export default function App(props) {
                                     </Box>
                                     <Box
                                     sx={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-start',
+                                        alignItems: 'center',
+                                        marginY: '5px',
+                                    }}>
+                                        <section
+                                        style={{ fontSize: '10px'}}
+                                        dangerouslySetInnerHTML={{__html: props.selectedEvent.description}}>
+                                        </section>
+                                        {/* <Typography
+                                        paragraph={true}
+                                        textAlign={'justify'}
+                                        sx={{
+                                            fontSize: '14px',
+                                        }}>
+                                            {props.selectedEvent.description.length > 500 ? props.selectedEvent.description.substring(0, 500)+"..." : props.selectedEvent.description}
+                                        </Typography> */}
+                                    </Box>
+                                    <Box
+                                    sx={{
                                         marginTop: '20px',
                                         width: '100%',
                                     }}>
-                                        <Button
-                                        onClick={() => slideTo(1)}
-                                        variant='contained'
-                                        sx={{
-                                            width: '100%',
-                                            borderRadius: '20px',
-                                        }}>
-                                            <Grid
-                                            container={true}
-                                            direction="row"
-                                            spacing={0}
+                                        {
+                                            props.selectedEvent.id === 1
+                                            ?
+                                            <Button
+                                            onClick={() => window.location.href = 'https://salokapark.com/ticket/pilih-ticket'}
+                                            variant='contained'
                                             sx={{
-                                                display: 'flex',
                                                 width: '100%',
-                                                height: '100%',
-                                                padding: '10px',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center'
+                                                borderRadius: '20px',
                                             }}>
-                                                <Box>
-                                                    <Typography>
-                                                        Beli Tiket
-                                                    </Typography>
-                                                </Box>
-                                                <Box>
-                                                    <ShoppingCart/>
-                                                </Box>
-                                            </Grid>
-                                        </Button>
+                                                <Grid
+                                                container={true}
+                                                direction="row"
+                                                spacing={0}
+                                                sx={{
+                                                    display: 'flex',
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    padding: '10px',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center'
+                                                }}>
+                                                    <Box>
+                                                        <Typography>
+                                                            Beli Tiket
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box>
+                                                        <ShoppingCart/>
+                                                    </Box>
+                                                </Grid>
+                                            </Button>
+                                            :
+                                            <Button
+                                            onClick={() => slideTo(1)}
+                                            variant='contained'
+                                            sx={{
+                                                width: '100%',
+                                                borderRadius: '20px',
+                                            }}>
+                                                <Grid
+                                                container={true}
+                                                direction="row"
+                                                spacing={0}
+                                                sx={{
+                                                    display: 'flex',
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    padding: '10px',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center'
+                                                }}>
+                                                    <Box>
+                                                        <Typography>
+                                                            Beli Tiket
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box>
+                                                        <ShoppingCart/>
+                                                    </Box>
+                                                </Grid>
+                                            </Button>
+                                        }
                                     </Box>
                                 </Grid>
                             </Grid>
@@ -1812,7 +2010,7 @@ export default function App(props) {
                                                             {tickets[index].description}
                                                         </Typography>
                                                     </Box>
-                                                    <Box>
+                                                    {/* <Box>
                                                         <Typography
                                                         sx={{
                                                             fontSize: '10px',
@@ -1820,7 +2018,7 @@ export default function App(props) {
                                                         }}>
                                                             stock: {props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).stock_available.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : tickets[index].stock_available.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                                                         </Typography>
-                                                    </Box>
+                                                    </Box> */}
                                                     <Divider/>
                                                     <Box>
                                                         <Typography
@@ -1890,66 +2088,89 @@ export default function App(props) {
                                         </Paper>
                                     ))}
                                 </Grid>
-                                <Card
-                                elevation={5}
+                                <Box
                                 sx={{
-                                    marginX: '10px',
-                                    borderRadius: '30px'
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    flexWrap: 'wrap',
                                 }}>
+                                    <Card
+                                    elevation={5}
+                                    sx={{
+                                        borderRadius: '30px'
+                                    }}>
+                                        {
+                                            props.selectedEvent.id !== 1
+                                            ?
+                                            <Box
+                                            sx={{
+                                                width: '300px',
+                                                height: '50px',
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }}>
+                                                <Box
+                                                sx={{
+                                                    marginLeft: '10px'
+                                                }}>
+                                                    <Typography
+                                                    sx={{
+                                                        fontWeight: 500
+                                                    }}>{props.totalBill === 0 ? `Rp. 0`: `Rp. ${(props.totalBill+6000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}</Typography>
+                                                </Box>
+
+                                                {props.totalBill <= 0
+                                                    ?
+                                                    <Button
+                                                    disabled
+                                                    key={"checkout-button-enabled"}
+                                                    variant='contained'
+                                                    sx={{
+                                                        borderRadius: '30px',
+                                                        height: '100%',
+                                                    }}>
+                                                        <Typography
+                                                        sx={{
+                                                            fontSize: '18px',
+                                                            fontWeight: 600
+                                                        }}>Checkout</Typography>
+                                                    </Button>
+                                                    :
+                                                    <Button
+                                                    onClick={() => handleOpenDialogBayar()}
+                                                    key={"checkout-button-disabled"}
+                                                    variant='contained'
+                                                    sx={{
+                                                        borderRadius: '30px',
+                                                        height: '100%',
+                                                    }}>
+                                                        <Typography
+                                                        sx={{
+                                                            fontSize: '18px',
+                                                            fontWeight: 600
+                                                        }}>Checkout</Typography>
+                                                    </Button>
+                                                }
+
+                                            </Box>
+                                            :
+                                            null
+                                        }
+                                    </Card>
                                     <Box
                                     sx={{
-                                        width: '250px',
-                                        height: '50px',
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
+                                        marginLeft: '20px',
                                     }}>
-                                        <Box
+                                        <Typography
                                         sx={{
-                                            marginLeft: '10px'
+                                            fontSize: '12px'
                                         }}>
-                                            <Typography
-                                            sx={{
-                                                fontWeight: 500
-                                            }}>Rp. {props.totalBill.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
-                                        </Box>
-
-                                        {props.totalBill <= 0
-                                            ?
-                                            <Button
-                                            disabled
-                                            key={"checkout-button-enabled"}
-                                            variant='contained'
-                                            sx={{
-                                                borderRadius: '30px',
-                                                height: '100%',
-                                            }}>
-                                                <Typography
-                                                sx={{
-                                                    fontSize: '18px',
-                                                    fontWeight: 600
-                                                }}>Checkout</Typography>
-                                            </Button>
-                                            :
-                                            <Button
-                                            onClick={() => handleCheckoutButton()}
-                                            key={"checkout-button-disabled"}
-                                            variant='contained'
-                                            sx={{
-                                                borderRadius: '30px',
-                                                height: '100%',
-                                            }}>
-                                                <Typography
-                                                sx={{
-                                                    fontSize: '18px',
-                                                    fontWeight: 600
-                                                }}>Checkout</Typography>
-                                            </Button>
-                                        }
-
+                                            *admin fee Rp. 6,000
+                                        </Typography>
                                     </Box>
-                                </Card>
+                                </Box>
                             </Grid>
                         </SwiperSlide>
                         {/* bayar */}
@@ -1988,7 +2209,7 @@ export default function App(props) {
                                         value={name}
                                         onChange={value => handleChangeName(value)}
                                         autoComplete='off'
-                                        label="Nama"
+                                        label="Nama Sesuai ID/KTP"
                                         placeholder='Loka'
                                         size="small"
                                         InputProps={{
@@ -2018,7 +2239,7 @@ export default function App(props) {
                                             sx={{
                                                 width: '100%'
                                             }}
-                                            label="tanggal lahir"
+                                            label="Tanggal Lahir"
                                             placeholder="31 Maret 1997"
                                             slotProps={{
                                                 textField: {
@@ -2042,7 +2263,7 @@ export default function App(props) {
                                         onChange={value => handleChangePhone(value)}
                                         autoComplete='off'
                                         label="Nomor Telepon"
-                                        placeholder='08993011870'
+                                        placeholder='08XXXXXXXXXX'
                                         size="small"
                                         type='tel'
                                         InputProps={{
@@ -2187,7 +2408,7 @@ export default function App(props) {
                                             <Typography
                                             sx={{
                                                 fontWeight: 500
-                                            }}>Rp. {props.totalBill.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
+                                            }}>Rp. {(props.totalBill+6000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                                         </Box>
 
                                         {!canSubmit
@@ -2225,6 +2446,17 @@ export default function App(props) {
 
                                     </Box>
                                 </Card>
+                                <Box
+                                sx={{
+                                    marginX: '30px',
+                                }}>
+                                    <Typography
+                                    sx={{
+                                        fontSize: '12px',
+                                    }}>
+                                        *sudah termasuk biaya admin Rp. 6,000
+                                    </Typography>
+                                </Box>
                             </Grid>
                         </SwiperSlide>
                     </Swiper>
@@ -2270,7 +2502,7 @@ export default function App(props) {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose}>cancel</Button>
+                    <Button onClick={handleDialogClose}>close</Button>
                     <Button onClick={handleBayar} autoFocus>
                         next
                     </Button>
@@ -2321,9 +2553,10 @@ export default function App(props) {
                                     fontWeight: 400,
                                     lineHeight: 1.5,
                                 }}>
-                                    E-ticket Saloka Theme Park yang sah adalah e-ticket yang dibeli dengan tata cara yang telah ditentukan yaitu pembelian secara online melalui transaksi elektronik pada website www.tiketapasaja.com, ataupun autorized partner resmi.
-                                    Pembeli dianjurkan untuk mencetak e-ticket satu kali untuk satu id transaksi yang dibelinya, untuk menghindari resiko penggunaan e-ticket oleh pihak lain.
-                                    E-ticket menggunakan barcode dan berlaku untuk satu kali penggunaan.
+                                    E-ticket Saloka Theme Park yang sah adalah e-ticket yang dibeli dengan tata cara yang telah ditentukan yaitu pembelian secara online melalui transaksi
+                                    elektronik pada website www.salokafest.salokapark.com, ataupun autorized partner resmi. Pembeli hanya perlu mencetak e-ticket satu kali untuk satu
+                                    id/beberapa transaksi yang dibelinya, untuk menghindari resiko penggunaan e-ticket oleh pihak lain. E-ticket menggunakan barcode dan berlaku untuk
+                                    satu kali penggunaan.
                                 </Typography>
                                 <Typography
                                 textAlign={'justify'}
@@ -2333,9 +2566,12 @@ export default function App(props) {
                                     fontWeight: 400,
                                     lineHeight: 1.5,
                                 }}>
-                                    Penyelenggara berhak untuk memproses dan menuntut secara hukum sesuai dengan ketentuan perundangan yang berlaku baik secara perdata maupun pidana terhadap orang-orang yang memperoleh e-ticket dengan cara yang tidak sah termasuk tapi tidak terbatas dengan cara melakukan pemalsuan atau menggandakan e-ticket yang sah atau memperoleh e-ticket dengan cara yang tidak sesuai.
-                                    Dilarang menggandakan e-ticket. Penyelenggara dan Saloka Theme Park tidak bertanggungjawab atas kelalaian pembeli tiket yang mengakibatkan e-ticket jatuh ke tangan orang lain (dalam penguasaan orang lain) untuk dipergunakan sebagai tanda masuk tempat pertunjukan yang menghilangkan hak dari pembeli tiket.
-                                    E-ticket tidak dapat ditukar dan tidak dapat diuangkan kembali.
+                                    Penyelenggara berhak untuk memproses dan menuntut secara hukum sesuai dengan ketentuan perundangan yang berlaku baik secara perdata maupun
+                                    pidana terhadap orang-orang yang memperoleh e-ticket dengan cara yang tidak sah termasuk tapi tidak terbatas dengan cara melakukan pemalsuan
+                                    atau menggandakan e-ticket yang sah atau memperoleh e-ticket dengan cara yang tidak sesuai. Dilarang menggandakan e-ticket. Penyelenggara dan
+                                    Saloka Theme Park tidak bertanggungjawab atas kelalaian pembeli tiket yang mengakibatkan e-ticket jatuh ke tangan orang lain (dalam penguasaan
+                                    orang lain) untuk dipergunakan sebagai tanda masuk tempat pertunjukan yang menghilangkan hak dari pembeli tiket. E-ticket tidak dapat ditukar dan
+                                    tidak dapat diuangkan kembali.
                                 </Typography>
                                 <Typography
                                 textAlign={'justify'}
@@ -2345,9 +2581,11 @@ export default function App(props) {
                                     fontWeight: 400,
                                     lineHeight: 1.5,
                                 }}>
-                                    Penukaran tiket asli yang diwakilkan oleh orang lain harus disertai dengan surat kuasa dan fotocopy identitas pembeli.
-                                    Informasi waktu dan tempat penukaran tiket asli akan selalu diupdate di instagram @salokathemepark
-                                    Tiket yang sah adalah e-ticket yang sudah ditukarkan dengan tiket asli sebagai tanda masuk acara.
+                                    Penukaran tiket asli yang diwakilkan oleh orang lain harus disertai dengan surat kuasa dan fotocopy identitas pembeli. Informasi waktu dan tempat
+                                    penukaran tiket asli akan selalu diupdate di instagram @salokapark Tiket yang sah adalah e-ticket yang sudah ditukarkan dengan tiket asli/gelang tiket
+                                    sebagai tanda masuk acara.
+                                    Teliti terlebih dahulu dalam pembelian, karena apabila ada kesalahan yang disebabkan oleh peng inputan data oleh pembeli, maka e ticket / e voucher
+                                    tidak dapat di refund.
                                 </Typography>
                                 <Typography
                                 textAlign={'justify'}
@@ -2365,7 +2603,7 @@ export default function App(props) {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogCloseTNC}>cancel</Button>
+                    <Button onClick={handleDialogCloseTNC}>close</Button>
                 </DialogActions>
             </Dialog>
 

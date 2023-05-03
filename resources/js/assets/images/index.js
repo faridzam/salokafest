@@ -17,6 +17,8 @@ import LogoSalokafestBlackXHDPI from "./logo_salokafest_blackxhdpi.png";
 import LogoSalokafestBlackXXHDPI from "./logo_salokafest_blackxxhdpi.png";
 import LogoSalokafestBlackXXXHDPI from "./logo_salokafest_blackxxxhdpi.png";
 import DummyBarcode from "./bayar_dulu_goblok_.png";
+import LogoBaruWhite from "./logo_salokafest_baru_white.png";
+import LogoBaruBlack from "./logo_salokafest_baru_black.png";
 
 export const media = [
     LogoSaloka,
@@ -38,4 +40,6 @@ export const media = [
     LogoSalokafestBlackXXHDPI,
     LogoSalokafestBlackXXXHDPI,
     DummyBarcode,
+    LogoBaruWhite,
+    LogoBaruBlack
 ];

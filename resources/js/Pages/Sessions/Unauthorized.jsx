@@ -95,7 +95,8 @@ export default function Unauthorized(props) {
                             props.id === 1
                             ?
                             <Box>
-                                <Button>salokapark.com</Button>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
                             </Box>
                             :
                             null
@@ -104,7 +105,18 @@ export default function Unauthorized(props) {
                             props.id === 2
                             ?
                             <Box>
-                                <Button>link pembelian</Button>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
+                            </Box>
+                            :
+                            null
+                        }
+                        {
+                            props.id === 3
+                            ?
+                            <Box>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
                             </Box>
                             :
                             null
@@ -171,7 +183,8 @@ export default function Unauthorized(props) {
                             props.id === 1
                             ?
                             <Box>
-                                <Button>refresh</Button>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
                             </Box>
                             :
                             null
@@ -180,7 +193,18 @@ export default function Unauthorized(props) {
                             props.id === 2
                             ?
                             <Box>
-                                <Button>refresh</Button>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
+                            </Box>
+                            :
+                            null
+                        }
+                        {
+                            props.id === 3
+                            ?
+                            <Box>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
                             </Box>
                             :
                             null

@@ -233,7 +233,13 @@ export default function App(props) {
                                                     fontWeight: 400,
                                                     color: '#555'
                                                 }}>
-                                                    start from
+                                                    {
+                                                        events[index].id === 1
+                                                        ?
+                                                        "Ticket Reguler"
+                                                        :
+                                                        "start From"
+                                                    }
                                                 </Typography>
                                                 <Typography
                                                 style={hovered === events[index].id ? textHoveredStyle : textUnhoveredStyle}
@@ -386,7 +392,13 @@ export default function App(props) {
                                                 fontWeight: 400,
                                                 color: '#555'
                                             }}>
-                                                start from
+                                                {
+                                                    events[index].id === 1
+                                                    ?
+                                                    "Ticket Reguler"
+                                                    :
+                                                    "start From"
+                                                }
                                             </Typography>
                                             <Typography
                                             style={hovered === events[index].id ? textHoveredStyle : textUnhoveredStyle}

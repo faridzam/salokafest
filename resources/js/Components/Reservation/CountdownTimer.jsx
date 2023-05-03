@@ -8,7 +8,7 @@ import {Box, Typography} from '@mui/material';
 const ExpiredNotice = () => {
   window.setTimeout(function(){
     // Move to a new location or you can do something else
-    window.location.href = `https://salokafest.salokapark.app/expired`;
+    window.location.href = `https://salokafest.salokapark.com/expired`;
   }, 3000);
   return (
     <Grid

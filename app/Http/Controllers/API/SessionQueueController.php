@@ -17,7 +17,7 @@ class SessionQueueController extends Controller
         ->where('isActive', true)
         ->count();
         // create new session
-        if ($session_active <= 100) {
+        if ($session_active <= 500) {
 
             if (request('id') === '08993011870') {
                 $session_created = 'existing';

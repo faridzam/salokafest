@@ -5,6 +5,7 @@ import {Box, Typography, CircularProgress, Fade} from '@mui/material';
 import {} from '@mui/icons-material';
 
 import {mediaSalokafest} from '../assets/images/salokafest';
+import {media} from '../assets/images';
 import customStyle from './GetSession.module.css';
 
 import { ThemeProvider } from "@emotion/react";
@@ -51,7 +52,7 @@ export default function Ticket(props) {
             if (diffMins >= 0) {
                 var sessionCode = {
                     id: new Date().getFullYear().toString()+(new Date().getMonth()+1).toString().padStart(2, "0")+new Date().getDate().toString().padStart(2, "0")+new Date().getMinutes().toString().padStart(2, "0")+new Date().getMilliseconds().toString().padStart(2, "0")+Math.floor(Math.random()*(999-100+1)+100).toString().substring(1),
-                    expire: new Date(dateTimeNow.getTime() + 30*60000)
+                    expire: new Date(dateTimeNow.getTime() + 15*60000)
                 }
 
                 axios.post('/api/check-session', {
@@ -61,16 +62,17 @@ export default function Ticket(props) {
                     //
                     let session_active = response.data.session_active;
                     let session_created = response.data.session_created;
-                    if (session_active >= 100) {
+                    if (session_active >= 500) {
                         //
-                        alert(session_active);
+                        window.location.href = `https://salokafest.salokapark.com/busy`;
+                        // alert(session_active);
                     } else {
                         //
                         encryptStorage.setItem('sessionCodeID', JSON.stringify(session_created));
                         encryptStorage.setItem('sessionCodeEX', JSON.stringify(sessionCode.expire));
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else
-                            window.location.href = `https://salokafest.salokapark.app/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
+                            window.location.href = `https://salokafest.salokapark.com/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
                         }, 3000);
                     }
                 }).catch((error) => {
@@ -82,7 +84,7 @@ export default function Ticket(props) {
 
                 var sessionCode = {
                     id: new Date().getFullYear().toString()+(new Date().getMonth()+1).toString().padStart(2, "0")+new Date().getDate().toString().padStart(2, "0")+new Date().getMinutes().toString().padStart(2, "0")+new Date().getMilliseconds().toString().padStart(2, "0")+Math.floor(Math.random()*(999-100+1)+100).toString().substring(1),
-                    expire: new Date(dateTimeNow.getTime() + 30*60000)
+                    expire: new Date(dateTimeNow.getTime() + 15*60000)
                 }
 
                 axios.post('/api/check-session', {
@@ -99,7 +101,7 @@ export default function Ticket(props) {
                         //
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else
-                            window.location.href = `https://salokafest.salokapark.app/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
+                            window.location.href = `https://salokafest.salokapark.com/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
                         }, 3000);
                     }
                 }).catch((error) => {
@@ -112,7 +114,7 @@ export default function Ticket(props) {
             var dateTimeNow = new Date();
             var sessionCode = {
                 id: new Date().getFullYear().toString()+(new Date().getMonth()+1).toString().padStart(2, "0")+new Date().getDate().toString().padStart(2, "0")+new Date().getMinutes().toString().padStart(2, "0")+new Date().getMilliseconds().toString().padStart(2, "0")+Math.floor(Math.random()*(999-100+1)+100).toString().substring(1),
-                expire: new Date(dateTimeNow.getTime() + 30*60000)
+                expire: new Date(dateTimeNow.getTime() + 15*60000)
             }
             axios.post('/api/check-session', {
                 id: sessionCode.id,
@@ -121,16 +123,17 @@ export default function Ticket(props) {
                 //
                 let session_active = response.data.session_active;
                 let session_created = response.data.session_created;
-                if (session_active >= 100) {
+                if (session_active >= 500) {
                     //
-                    alert(session_active);
+                    // alert(session_active);
+                    window.location.href = `https://salokafest.salokapark.com/busy`;
                 } else {
                     //
                     encryptStorage.setItem('sessionCodeID', JSON.stringify(session_created));
                     encryptStorage.setItem('sessionCodeEX', JSON.stringify(sessionCode.expire));
                     window.setTimeout(function(){
                         // Move to a new location or you can do something else
-                        window.location.href = `https://salokafest.salokapark.app/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
+                        window.location.href = `https://salokafest.salokapark.com/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
                     }, 3000);
                 }
             }).catch((error) => {
@@ -169,18 +172,19 @@ export default function Ticket(props) {
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                width: '100%',
+                                width: '250px',
                             }}>
                                 <img
-                                src={mediaSalokafest[0]}
+                                src={media[19]}
                                 style={{
+                                    width: '250px',
                                 }}></img>
                             </Box>
                             <Box
                             sx={{
                                 marginTop: '30px',
                             }}>
-                            <CircularProgress />
+                                <CircularProgress/>
                             </Box>
                             <Box>
                                 <Typography

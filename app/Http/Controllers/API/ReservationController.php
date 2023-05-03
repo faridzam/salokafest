@@ -24,7 +24,7 @@ class ReservationController extends Controller
         $this->isSanitized = true;
         $this->is3ds = true;
         $this->appendNotifUrl = "https://example.com/test1,https://example.com/test2";
-        $this->overrideNotifUrl = "https://salokafest.salokapark.app/api/midtrans-notif-handler";
+        $this->overrideNotifUrl = "https://salokafest.salokapark.com/api/midtrans-notif-handler";
     }
 
     public function createReservation(Request $request){
@@ -68,9 +68,9 @@ class ReservationController extends Controller
         $reservation = reservation::create([
             'customer_id' => $customer->id,
             'event_id' => $request->event_id,
-            'order_id' => "sf-test-local-2".$customer->id.Carbon::now()->format('y').sprintf('%05d', substr(strval($sex), -5)),
+            'order_id' => "sf-test-local-3".$customer->id.Carbon::now()->format('y').sprintf('%05d', substr(strval($sex), -5)),
             'arrival_date' => $bookingDate,
-            'bill' => $totalBill,
+            'bill' => $totalBill+6000,
             'status' => "created",
         ]);
 
@@ -105,7 +105,7 @@ class ReservationController extends Controller
         $params = array(
             'transaction_details' => array(
                 'order_id' => $reservation->order_id,
-                'gross_amount' => $totalBill,
+                'gross_amount' => $totalBill+6000,
             ),
             'item_details' => $itemDetails,
             'credit_card' => array(
@@ -272,7 +272,7 @@ class ReservationController extends Controller
                     $stock_update->update();
                 }
 
-                $affiliateID = '571343950';
+                // $affiliateID = '571343950';
                 // $zealsCallback = Http::post('https://demo.zeals.asia/apiv1/AMPcallback/', [
                 //     'encrypted_code' => $reservationData->zeals_code,
                 //     'aff_id' => $affiliateID,

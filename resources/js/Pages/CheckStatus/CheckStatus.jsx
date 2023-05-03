@@ -3,7 +3,7 @@ import { Head } from '@inertiajs/react';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import {useMediaQuery, Box, Typography, Zoom, Paper, Slide, Button, TextField} from '@mui/material';
 import {Search} from '@mui/icons-material';
-import { router } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { EncryptStorage } from 'encrypt-storage';
 
@@ -18,6 +18,31 @@ import { ThemeProvider } from '@emotion/react';
 export default function CheckStatus(props) {
 
     const desktop = useMediaQuery(theme.breakpoints.up('laptop'));
+
+    const { reservations } = usePage().props;
+    // Laravel's pagination data object = data
+    const [query, setQuery] = React.useState({
+        search: props.filter.search
+    });
+
+    console.log(props);
+    // useEffect(() => {
+    //     Inertia.get(route(route().current()), query, {
+    //         preserveState: true,
+    //         replace: true,
+    //     });
+    // }, [query]);
+
+    const search = (e) => {
+
+        router.get(
+            '/check-status', query,
+            {
+                preserveState: true,
+                replace: true,
+            },
+        );
+    }
 
     return (
         <>
@@ -78,8 +103,13 @@ export default function CheckStatus(props) {
                                         justifyContent: 'center',
                                     }}>
                                         <TextField
+                                        value={query.search}
+                                        onChange={(e) => setQuery({
+                                            search: e.target.value
+                                        })}
+                                        // value={data.email}
+                                        // onChange={e => setData('email', e.target.value)}
                                         placeholder="email"
-                                        // onChange={value => handleEmailChange(value)}
                                         sx={{
                                             width: '50%',
                                             margin: 0,
@@ -111,7 +141,7 @@ export default function CheckStatus(props) {
                                         InputProps={{
                                             endAdornment:
                                                 <Button
-                                                // onClick={() => findReservation()}
+                                                onClick={search}
                                                 variant="contained"
                                                 color='secondary'
                                                 sx={{
@@ -141,10 +171,80 @@ export default function CheckStatus(props) {
                                                 </Button>
                                         }}>
                                         </TextField>
-
                                     </Box>
                                 </Grid>
                             </Paper>
+                        </Grid>
+                        <Grid
+                        container={true}
+                        direction="row"
+                        spacing={3}
+                        sx={{
+                            display: 'flex',
+                            width: '100%',
+                            height: '80vh',
+                            marginTop: '50px',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <Paper
+                            elevation={3}
+                            sx={{
+                                width: '50%',
+                                height: '100%'
+                            }}>
+                                <Grid
+                                container={true}
+                                direction="column"
+                                spacing={0}
+                                sx={{
+                                    display: 'flex',
+                                    width: '100%',
+                                    height: '100%',
+                                    padding: '10px',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    {/* reservations */}
+                                    <Box
+                                    sx={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        justifyContent: 'center'
+                                    }}>
+                                        {reservations?.data?.map((reservation, index) => (
+                                            <Grid
+                                            container={true}
+                                            direction="column"
+                                            spacing={0}
+                                            sx={{
+                                                display: 'flex',
+                                                width: '100%',
+                                                height: '100%',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}>
+                                                <Box>
+                                                    <Typography>
+                                                        {reservation.id}
+                                                    </Typography>
+                                                </Box>
+                                                <Box>
+                                                    <Typography>
+                                                        {reservation.customer.name}
+                                                    </Typography>
+                                                </Box>
+                                            </Grid>
+                                        ))}
+                                    </Box>
+                                </Grid>
+                            </Paper>
+                            <Paper
+                            elevation={3}
+                            sx={{
+                                width: '40%',
+                                height: '100%'
+                            }}></Paper>
                         </Grid>
                     </Grid>
                     :

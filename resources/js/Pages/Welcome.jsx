@@ -109,10 +109,10 @@ export default function Welcome(props) {
         var to = new Date(numberFrom[0], numberFrom[1]-1, numberFrom[2], 0, 0, 0, 0);
         setArrivalDate(to);
     }
-    const addSelectedTicket = (data) => {
+    const addSelectedTicket = async (data) => {
 
         // check stock
-        axios.post('/api/check-available-stock', {
+        await axios.post('/api/check-available-stock', {
             ticket_id: data.id,
         }).then((response) => {
             let stock_available = response.data.stock_available;
@@ -188,9 +188,9 @@ export default function Welcome(props) {
         //
 
     }
-    const subSelectedTicket = (data) => {
+    const subSelectedTicket = async (data) => {
         // check stock
-        axios.post('/api/check-available-stock', {
+        await axios.post('/api/check-available-stock', {
             ticket_id: data.id,
         }).then((response) => {
             let stock_available = response.data.stock_available;
@@ -548,7 +548,11 @@ export default function Welcome(props) {
                                                 }}>
                                                     <Typography
                                                     textAlign={'center'}>
-                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tincidunt massa sit amet purus accumsan, non accumsan mi mattis. Cras gravida rutrum nulla, vitae fermentum dui semper sed. Duis non ipsum blandit, efficitur elit eget, consectetur dolor. Fusce faucibus scelerisque libero, et rutrum felis cursus sit amet
+                                                        Saloka Theme Park presents : Saloka Fest – Music & Art 2023
+                                                        Konser Festival bertema Music & Art ini akan dilaksanakan selama 4 hari, dari tanggal 22 – 25 Juni
+                                                        2023. Deretan artis papan atas seperti Dewa 19, Kahitna, Shaggydog dan artis besar lain nya akan
+                                                        memberikan performa terbaik nya di Saloka Fest ini. So, don’t miss it !!
+                                                        Cek menu di bawah untuk link pembelian tiket nya !
                                                     </Typography>
                                                 </Box>
                                             </Grid>
@@ -637,7 +641,7 @@ export default function Welcome(props) {
                                 width: '100vw',
                                 overflow: 'hidden',
                             }}>
-                            <img
+                                <img
                                 // src={selectedEvent.image ? `${import.meta.env.VITE_MAIN_URL+selectedEvent.image}` : mediaBanner[1]}
                                 src={selectedEvent.image ? getImageByID(selectedEvent.id).image : mediaBanner[1]}
                                 alt="banner_salokafest"
