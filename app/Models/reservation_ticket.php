@@ -17,4 +17,13 @@ class reservation_ticket extends Model
         'subtotal',
         'unique_code',
     ];
+
+    public function reservation()
+    {
+        return $this->belongsTo(reservation::class,'reservation_id','id');
+    }
+    public function ticket()
+    {
+        return $this->belongsTo(ticket::class,'ticket_id','id');
+    }
 }

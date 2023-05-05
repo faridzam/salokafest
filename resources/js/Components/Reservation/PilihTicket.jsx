@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "../../utils/theme";
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-import {useMediaQuery, Box, Typography, Paper, Card, Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, AppBar, Toolbar, IconButton, Slide, Divider, TextField, InputAdornment, Chip, Checkbox, Stack} from '@mui/material';
+import {useMediaQuery, Box, Typography, Paper, Card, Fab, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, AppBar, Toolbar, IconButton, Slide, Divider, TextField, InputAdornment, Chip, Checkbox, Stack, LinearProgress} from '@mui/material';
 import {Place, CalendarMonth, AccessTime, Remove, Add, Close, ShoppingCart, AccountCircle, Phone, Email, LocationOn} from '@mui/icons-material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -84,11 +84,13 @@ export default function App(props) {
     const CONTENT_COUNT = tickets.length;
     const tickets_content = Array.from(Array(CONTENT_COUNT).keys());
 
-    const handleAddTicket = (data) => {
-        props.addTicket(data);
+    const handleAddTicket = async (e, data) => {
+        e.preventDefault();
+        await props.addTicket(data);
     }
-    const handleSubTicket = (data) => {
-        props.subTicket(data);
+    const handleSubTicket = async (e, data) => {
+        e.preventDefault();
+        await props.subTicket(data);
     }
 
     const handleCheckoutButton = () => {
@@ -277,10 +279,11 @@ export default function App(props) {
     const [openDialog, setOpenDialog] = React.useState(false);
 
     const handleDialogOpen = () => {
-      setOpenDialog(true);
+        setOpenDialog(true);
     };
     const handleDialogClose = () => {
-      setOpenDialog(false);
+        sestLoadingBayar(false);
+        setOpenDialog(false);
     };
 
     // tnc dialog
@@ -294,7 +297,10 @@ export default function App(props) {
     };
 
     const [midtransSnapToken, setMidtransSnapToken] = React.useState(false);
-    const handleBayar = () => {
+    const [loadingBayar, sestLoadingBayar] = React.useState(false);
+    const handleBayar = async (e) => {
+        e.preventDefault();
+        sestLoadingBayar(true);
         //
         if(midtransSnapToken){
             //
@@ -302,21 +308,25 @@ export default function App(props) {
                 midtransSnapToken,
                 {
                     onSuccess: function(result){
+                        sestLoadingBayar(false);
                         console.log('success');console.log(result);
                     },
                     onPending: function(result){
+                        sestLoadingBayar(false);
                         console.log('pending');console.log(result);
                     },
                     onError: function(result){
+                        sestLoadingBayar(false);
                         console.log('error');console.log(result);
                     },
                     onClose: function(){
+                        handleDialogClose();
                         console.log('customer closed the popup without finishing the payment');
                     }
                 }
             )
         } else {
-            axios.post('/api/create-reservation', {
+            await axios.post('/api/create-reservation', {
                 event_id: props.selectedEvent.id,
                 session_id: props.sessionID,
                 name: name,
@@ -333,15 +343,19 @@ export default function App(props) {
                     response.data.token,
                     {
                         onSuccess: function(result){
+                            sestLoadingBayar(false);
                             console.log('success');console.log(result);
                         },
                         onPending: function(result){
+                            sestLoadingBayar(false);
                             console.log('pending');console.log(result);
                         },
                         onError: function(result){
+                            sestLoadingBayar(false);
                             console.log('error');console.log(result);
                         },
                         onClose: function(){
+                            handleDialogClose();
                             console.log('customer closed the popup without finishing the payment');
                         }
                     }
@@ -349,6 +363,7 @@ export default function App(props) {
             }).catch((error) => {
                 //
                 console.log(error);
+                sestLoadingBayar(false);
             });
         }
     }
@@ -360,6 +375,7 @@ export default function App(props) {
     };
 
     const handleCloseDialogBayar = () => {
+        sestLoadingBayar(false);
         setDialogBayar(false);
     };
 
@@ -765,9 +781,8 @@ export default function App(props) {
                                             loading="lazy"
                                             style={{
                                                 layout: 'fill',
-                                                objectFit: 'cover',
+                                                objectFit: 'contain',
                                                 objectPosition: 'center',
-                                                width: '100%',
                                                 height: '100%',
                                             }}></img>
                                         </Box>
@@ -1494,7 +1509,8 @@ export default function App(props) {
                                                         alignItems: 'center',
                                                     }}>
                                                         <Fab
-                                                        onClick={() => handleSubTicket(tickets[index])}
+                                                        onClick={(e) => handleSubTicket(e, tickets[index])}
+                                                        onDoubleClick={null}
                                                         size="small"
                                                         variant='outlined'
                                                         color='primary'
@@ -1517,7 +1533,8 @@ export default function App(props) {
                                                             fontWeight: 600
                                                         }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
                                                         <Fab
-                                                        onClick={() => handleAddTicket(tickets[index])}
+                                                        onClick={(e) => handleAddTicket(e, tickets[index])}
+                                                        onDoubleClick={null}
                                                         size="small"
                                                         variant='outlined'
                                                         color='primary'
@@ -1606,7 +1623,7 @@ export default function App(props) {
                                             </Button>
                                             :
                                             <Button
-                                            onClick={() => handleOpenDialogBayar()}
+                                            onClick={handleOpenDialogBayar}
                                             key={"checkout-button-disabled"}
                                             variant='contained'
                                             sx={{
@@ -2030,60 +2047,79 @@ export default function App(props) {
                                                         </Typography>
                                                     </Box>
                                                 </Grid>
-                                                <Grid
-                                                container={true}
-                                                direction="row"
-                                                spacing={0}
-                                                sx={{
-                                                    display: 'flex',
-                                                    width: '60%',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                }}>
-                                                    <Fab
-                                                    onClick={() => handleSubTicket(tickets[index])}
-                                                    size="small"
-                                                    variant='outlined'
-                                                    color='primary'
+                                                {
+                                                    tickets[index].stock_available > 0
+                                                    ?
+                                                    <Grid
+                                                    container={true}
+                                                    direction="row"
+                                                    spacing={0}
                                                     sx={{
-                                                        minWidth: '30px',
-                                                        width: '30px',
-                                                        minHeight: '30px',
-                                                        height: '30px',
-                                                        marginX: '20px'
+                                                        display: 'flex',
+                                                        width: '60%',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
                                                     }}>
-                                                        <Remove
+                                                        <Fab
+                                                        onClick={(e) => handleSubTicket(e, tickets[index])}
+                                                        onDoubleClick={null}
+                                                        size="small"
+                                                        variant='outlined'
+                                                        color='primary'
                                                         sx={{
-                                                            margin: 0,
-                                                            padding: 0,
-                                                        }}/>
-                                                    </Fab>
-                                                    <Box>
-                                                        <Typography
+                                                            minWidth: '30px',
+                                                            width: '30px',
+                                                            minHeight: '30px',
+                                                            height: '30px',
+                                                            marginX: '20px'
+                                                        }}>
+                                                            <Remove
+                                                            sx={{
+                                                                margin: 0,
+                                                                padding: 0,
+                                                            }}/>
+                                                        </Fab>
+                                                        <Box>
+                                                            <Typography
+                                                            sx={{
+                                                                fontSize: '24px',
+                                                                fontWeight: 600
+                                                            }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
+                                                        </Box>
+                                                        <Fab
+                                                        onClick={(e) => handleAddTicket(e, tickets[index])}
+                                                        onDoubleClick={null}
+                                                        size="small"
+                                                        variant='outlined'
+                                                        color='primary'
                                                         sx={{
-                                                            fontSize: '24px',
-                                                            fontWeight: 600
-                                                        }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
+                                                            minWidth: '30px',
+                                                            width: '30px',
+                                                            minHeight: '30px',
+                                                            height: '30px',
+                                                            marginX: '20px'
+                                                        }}>
+                                                            <Add
+                                                            sx={{
+                                                                margin: 0,
+                                                                padding: 0,
+                                                            }}/>
+                                                        </Fab>
+                                                    </Grid>
+                                                    :
+                                                    <Box
+                                                    sx={{
+                                                        maxHeight: '100%',
+                                                        paddingRight: '30px',
+                                                    }}>
+                                                        <img
+                                                        src={mediaSold[1]}
+                                                        style={{
+                                                            objectFit: 'contain',
+                                                            height: '100px',
+                                                        }}></img>
                                                     </Box>
-                                                    <Fab
-                                                    onClick={() => handleAddTicket(tickets[index])}
-                                                    size="small"
-                                                    variant='outlined'
-                                                    color='primary'
-                                                    sx={{
-                                                        minWidth: '30px',
-                                                        width: '30px',
-                                                        minHeight: '30px',
-                                                        height: '30px',
-                                                        marginX: '20px'
-                                                    }}>
-                                                        <Add
-                                                        sx={{
-                                                            margin: 0,
-                                                            padding: 0,
-                                                        }}/>
-                                                    </Fab>
-                                                </Grid>
+                                                }
                                             </Grid>
                                         </Paper>
                                     ))}
@@ -2139,7 +2175,7 @@ export default function App(props) {
                                                     </Button>
                                                     :
                                                     <Button
-                                                    onClick={() => handleOpenDialogBayar()}
+                                                    onClick={handleCheckoutButton}
                                                     key={"checkout-button-disabled"}
                                                     variant='contained'
                                                     sx={{
@@ -2468,6 +2504,13 @@ export default function App(props) {
             onClose={handleDialogClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description">
+                {
+                    loadingBayar
+                    ?
+                    <LinearProgress color='primary'/>
+                    :
+                    null
+                }
                 <DialogTitle id="alert-dialog-title">
                 Perhatian!!!
                 </DialogTitle>
@@ -2503,7 +2546,7 @@ export default function App(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose}>close</Button>
-                    <Button onClick={handleBayar} autoFocus>
+                    <Button onClick={handleBayar} onDoubleClick={null} autoFocus>
                         next
                     </Button>
                 </DialogActions>
@@ -2586,17 +2629,6 @@ export default function App(props) {
                                     sebagai tanda masuk acara.
                                     Teliti terlebih dahulu dalam pembelian, karena apabila ada kesalahan yang disebabkan oleh peng inputan data oleh pembeli, maka e ticket / e voucher
                                     tidak dapat di refund.
-                                </Typography>
-                                <Typography
-                                textAlign={'justify'}
-                                paragraph={true}
-                                sx={{
-                                    fontSize: '14px',
-                                    fontWeight: 400,
-                                    lineHeight: 1.5,
-                                }}>
-                                    Teliti terlebih dahulu dalam pembelian, karena apabila ada kesalahan yang disebabkan oleh peng inputan data oleh pembeli, maka e ticket / e voucher tidak dapat di refund.
-                                    Billing yang tercatat adalah Nicepay Online Payment.
                                 </Typography>
                             </Box>
                         </Grid>

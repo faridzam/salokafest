@@ -64,7 +64,7 @@ export default function Ticket(props) {
                     let session_created = response.data.session_created;
                     if (session_active >= 500) {
                         //
-                        window.location.href = `https://salokafest.salokapark.com/busy`;
+                        window.location.href = `${import.meta.env.VITE_MAIN_URL}/busy`;
                         // alert(session_active);
                     } else {
                         //
@@ -72,7 +72,7 @@ export default function Ticket(props) {
                         encryptStorage.setItem('sessionCodeEX', JSON.stringify(sessionCode.expire));
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else
-                            window.location.href = `https://salokafest.salokapark.com/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
+                            window.location.href = `${import.meta.env.VITE_MAIN_URL}/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
                         }, 3000);
                     }
                 }).catch((error) => {
@@ -101,7 +101,7 @@ export default function Ticket(props) {
                         //
                         window.setTimeout(function(){
                             // Move to a new location or you can do something else
-                            window.location.href = `https://salokafest.salokapark.com/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
+                            window.location.href = `${import.meta.env.VITE_MAIN_URL}/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
                         }, 3000);
                     }
                 }).catch((error) => {
@@ -126,14 +126,14 @@ export default function Ticket(props) {
                 if (session_active >= 500) {
                     //
                     // alert(session_active);
-                    window.location.href = `https://salokafest.salokapark.com/busy`;
+                    window.location.href = `${import.meta.env.VITE_MAIN_URL}/busy`;
                 } else {
                     //
                     encryptStorage.setItem('sessionCodeID', JSON.stringify(session_created));
                     encryptStorage.setItem('sessionCodeEX', JSON.stringify(sessionCode.expire));
                     window.setTimeout(function(){
                         // Move to a new location or you can do something else
-                        window.location.href = `https://salokafest.salokapark.com/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
+                        window.location.href = `${import.meta.env.VITE_MAIN_URL}/reservation?sessionCodeID=${encodeURIComponent(localStorage.getItem('sessionCodeID'))}&sessionCodeEX=${encodeURIComponent(localStorage.getItem('sessionCodeEX'))}`;
                     }, 3000);
                 }
             }).catch((error) => {

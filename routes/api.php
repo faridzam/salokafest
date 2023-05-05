@@ -7,6 +7,7 @@ use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\TicketController;
 use App\Http\Controllers\API\ReservationController;
 use App\Http\Controllers\API\SessionQueueController;
+use App\Http\Controllers\API\CheckBotmail;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,6 @@ Route::post('create-reservation', [ReservationController::class, 'createReservat
 Route::post('check-session', [SessionQueueController::class, 'checkSession']);
 // midtrans notif handler
 Route::post('midtrans-notif-handler', [ReservationController::class, 'midtransNotificationHandler']);
+
+// check botmail
+Route::post('check-botmail', [CheckBotmail::class, 'checkBotmail']);

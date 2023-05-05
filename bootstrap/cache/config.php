@@ -4,13 +4,13 @@
     'name' => 'Salokafest',
     'env' => 'production',
     'debug' => true,
-    'url' => 'https://salokafest.salokapark.com',
+    'url' => 'http://salokafest-staging.salokapark.com',
     'asset_url' => NULL,
     'timezone' => 'Asia/Jakarta',
     'locale' => 'id',
     'fallback_locale' => 'en',
     'faker_locale' => 'id_ID',
-    'key' => 'base64:RwN8lET9qBvMhRZXD2WMJ2XS1rwyM+tRUrgEcOrKdP8=',
+    'key' => 'base64:rkfCXBOb/R677/W0d0CWvgxCeU0UQPb7OscN2tsoaK8=',
     'cipher' => 'AES-256-CBC',
     'maintenance' => 
     array (
@@ -195,7 +195,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/www/wwwroot/salokafest.salokapark.com/storage/framework/cache/data',
+        'path' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -368,14 +368,14 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/www/wwwroot/salokafest.salokapark.com/storage/app',
+        'root' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/app',
         'throw' => false,
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/www/wwwroot/salokafest.salokapark.com/storage/app/public',
-        'url' => 'https://salokafest.salokapark.com/storage',
+        'root' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/app/public',
+        'url' => 'http://salokafest-staging.salokapark.com/storage',
         'visibility' => 'public',
         'throw' => false,
       ),
@@ -394,7 +394,7 @@
     ),
     'links' => 
     array (
-      '/www/wwwroot/salokafest.salokapark.com/public/storage' => '/www/wwwroot/salokafest.salokapark.com/storage/app/public',
+      '/www/wwwroot/salokafest-staging.salokapark.com/public/storage' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/app/public',
     ),
   ),
   'hashing' => 
@@ -433,13 +433,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/www/wwwroot/salokafest.salokapark.com/storage/logs/laravel.log',
+        'path' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/www/wwwroot/salokafest.salokapark.com/storage/logs/laravel.log',
+        'path' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -491,7 +491,7 @@
       ),
       'emergency' => 
       array (
-        'path' => '/www/wwwroot/salokafest.salokapark.com/storage/logs/laravel.log',
+        'path' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/logs/laravel.log',
       ),
     ),
   ),
@@ -557,7 +557,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/www/wwwroot/salokafest.salokapark.com/resources/views/vendor/mail',
+        0 => '/www/wwwroot/salokafest-staging.salokapark.com/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -624,7 +624,7 @@
       2 => '127.0.0.1',
       3 => '127.0.0.1:8000',
       4 => '::1',
-      5 => 'salokafest.salokapark.com',
+      5 => 'salokafest-staging.salokapark.com',
     ),
     'guard' => 
     array (
@@ -663,7 +663,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/www/wwwroot/salokafest.salokapark.com/storage/framework/sessions',
+    'files' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -683,9 +683,9 @@
   array (
     'paths' => 
     array (
-      0 => '/www/wwwroot/salokafest.salokapark.com/resources/views',
+      0 => '/www/wwwroot/salokafest-staging.salokapark.com/resources/views',
     ),
-    'compiled' => '/www/wwwroot/salokafest.salokapark.com/storage/framework/views',
+    'compiled' => '/www/wwwroot/salokafest-staging.salokapark.com/storage/framework/views',
   ),
   'inertia' => 
   array (
@@ -699,7 +699,7 @@
       'ensure_pages_exist' => true,
       'page_paths' => 
       array (
-        0 => '/www/wwwroot/salokafest.salokapark.com/resources/js/Pages',
+        0 => '/www/wwwroot/salokafest-staging.salokapark.com/resources/js/Pages',
       ),
       'page_extensions' => 
       array (
@@ -785,7 +785,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => '/www/wwwroot/salokafest.salokapark.com',
+    'remote_sites_path' => '/www/wwwroot/salokafest-staging.salokapark.com',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',

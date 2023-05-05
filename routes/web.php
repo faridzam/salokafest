@@ -31,7 +31,7 @@ Route::resource('/check-status', CheckStatusController::class);
 
 Route::get('/', function () {
 
-    $startDate = \Carbon\Carbon::createFromFormat('Y-m-d','2023-05-10');
+    $startDate = \Carbon\Carbon::createFromFormat('Y-m-d','2023-05-01');
     $endDate = \Carbon\Carbon::createFromFormat('Y-m-d','2023-06-30');
 
     if (Carbon::now()->between($startDate, $endDate)) {

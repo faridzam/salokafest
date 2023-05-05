@@ -21,4 +21,17 @@ class reservation extends Model
         'bill',
         'status',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(customer::class,'customer_id','id');
+    }
+    public function payment_method()
+    {
+        return $this->belongsTo(payment_method::class,'payment_method_id','id');
+    }
+    public function event()
+    {
+        return $this->belongsTo(event::class,'event_id','id');
+    }
 }

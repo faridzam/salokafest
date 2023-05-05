@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 
 use Carbon\Carbon;
@@ -14,17 +16,29 @@ use App\Models\customer;
 use App\Models\payment_method;
 use App\Models\reservation;
 use App\Models\reservation_ticket;
+use App\Models\botmail_request_log;
 
 class ReservationController extends Controller
 {
 
+    // sandbox
+    // public function __construct(){
+    //     $this->serverKey = 'SB-Mid-server-Mcyaglb-OqsipP7H_PPvHnLD';
+    //     $this->isProduction = false;
+    //     $this->isSanitized = true;
+    //     $this->is3ds = true;
+    //     $this->appendNotifUrl = "https://example.com/test1,https://example.com/test2";
+    //     $this->overrideNotifUrl = "https://salokafest-staging.salokapark.com/api/midtrans-notif-handler";
+    // }
+
+    // production
     public function __construct(){
-        $this->serverKey = 'SB-Mid-server-Mcyaglb-OqsipP7H_PPvHnLD';
-        $this->isProduction = false;
+        $this->serverKey = 'Mid-server-vDvFh0-mEQcapYlBhoNayo4E';
+        $this->isProduction = true;
         $this->isSanitized = true;
         $this->is3ds = true;
         $this->appendNotifUrl = "https://example.com/test1,https://example.com/test2";
-        $this->overrideNotifUrl = "https://salokafest.salokapark.com/api/midtrans-notif-handler";
+        $this->overrideNotifUrl = "https://salokafest-staging.salokapark.com/api/midtrans-notif-handler";
     }
 
     public function createReservation(Request $request){
@@ -63,6 +77,8 @@ class ReservationController extends Controller
             }
         };
 
+        $totalBill = $totalBill + 6000;
+
         $sex = reservation::count();
 
         $reservation = reservation::create([
@@ -70,14 +86,14 @@ class ReservationController extends Controller
             'event_id' => $request->event_id,
             'order_id' => "sf-test-local-3".$customer->id.Carbon::now()->format('y').sprintf('%05d', substr(strval($sex), -5)),
             'arrival_date' => $bookingDate,
-            'bill' => $totalBill+6000,
+            'bill' => $totalBill,
             'status' => "created",
         ]);
 
         $itemDetails = [];
 
         foreach ($request->ticketOrder as $key => $value) {
-            $subtotalBill = 0;
+            $subtotalBill = 6000;
             if ($value['qty'] > 0) {
                 $ticket = ticket::find($value['id']);
 
@@ -99,15 +115,14 @@ class ReservationController extends Controller
 
             }
         };
-
         $expireInMinutes = 5;
 
         $params = array(
             'transaction_details' => array(
                 'order_id' => $reservation->order_id,
-                'gross_amount' => $totalBill+6000,
+                'gross_amount' => $totalBill,
             ),
-            'item_details' => $itemDetails,
+            // 'item_details' => $itemDetails,
             'credit_card' => array(
                 'secure' => true,
             ),
@@ -139,6 +154,7 @@ class ReservationController extends Controller
 
         return response()->json([
             'token' => $reservation->snap_token,
+            'total_bill' => $totalBill,
         ]);
     }
 
@@ -242,7 +258,7 @@ class ReservationController extends Controller
             }
             else if ($transaction == 'settlement'){
                 // TODO set payment status in merchant's database to 'Settlement'
-                $reservationData = reservation::where('order_id', $order_id)->first();
+                $reservationData = reservation::with('customer', 'payment_method', 'event')->where('order_id', $order_id)->first();
                 $bookingCode = date('Ymd', strtotime( $reservationData->arrival_date )).$reservationData->payment_method_id.$reservationData->customer_id.$reservationData->id;
 
                 $reservation = reservation::where('order_id', $order_id)
@@ -257,8 +273,16 @@ class ReservationController extends Controller
                 //     'status' => 0,
                 // ]);
 
-                $reservationTicket = reservation_ticket::where('reservation_id', $reservationData->id)
+                $reservationTicket = reservation_ticket::with('reservation', 'ticket')->where('reservation_id', $reservationData->id)
                 ->get();
+
+                $client = new Client([
+                    'headers' => [
+                        'User-Agent' => 'postman-request',
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ]
+                ]);
 
                 foreach ($reservationTicket as $key => $value) {
                     $reservation_ticket_update = reservation_ticket::find($value->id);
@@ -270,6 +294,61 @@ class ReservationController extends Controller
                     $stock_update->stock_pending -= $value->qty;
                     $stock_update->stock_bought += $value->qty;
                     $stock_update->update();
+
+                    if ((double)$grossAmount === $reservationData->bill) {
+                        $count = reservation::whereDate('created_at', Carbon::today())
+                        ->where('status', 'settlement')
+                        ->count();
+    
+                        if ($count < 1950) {
+                            $response = $client->post('https://botmail.salokapark.app/api/data/salokafest', [
+                                'json' => [
+                                    'event_name' => $reservationData->event->name,
+                                    'ticket_type' => $value->ticket->name,
+                                    'event_date' => strval(Carbon::parse($reservationData->event->date)->formatLocalized('%A %d %B %Y')),
+                                    'event_time' => $reservationData->event->time,
+                                    'event_subtitle' => $reservationData->event->subtitle,
+                                    'ticket_qty' => strval($value->qty),
+                                    'invoice' => strval($bookingCode.sprintf('%02d', $value->qty).$value->id),
+                                    'cust_name' => $reservationData->customer->name,
+                                    'email' => $reservationData->customer->email,
+                                    'qrcode' => $reservationData->booking_code,
+                                    'resv_date' => strval(Carbon::parse($reservationData->arrival_date)->formatLocalized('%A %d %B %Y')),
+                                    'resv_paytime' => strval(Carbon::parse($reservationData->updated_at)->formatLocalized('%A %d %B %Y')),
+                                    'status' => 100,
+                                    'mail_sender' => 1
+                                ]
+                            ]);
+                            $log = new botmail_request_log;
+                            $log->status = $response->getStatusCode();
+                            $log->message = $response->getBody(true);
+                            $log->save();
+                        } else {
+                            $response = $client->post('https://botmail.salokapark.app/api/data/salokafest', [
+                                'json' => [
+                                    'event_name' => $reservationData->event->name,
+                                    'ticket_type' => $value->ticket->name,
+                                    'event_date' => strval(Carbon::parse($reservationData->event->date)->formatLocalized('%A %d %B %Y')),
+                                    'event_time' => $reservationData->event->time,
+                                    'event_subtitle' => $reservationData->event->subtitle,
+                                    'ticket_qty' => strval($value->qty),
+                                    'invoice' => strval($bookingCode.sprintf('%02d', $value->qty).$value->id),
+                                    'cust_name' => $reservationData->customer->name,
+                                    'email' => $reservationData->customer->email,
+                                    'qrcode' => $reservationData->booking_code,
+                                    'resv_date' => strval(Carbon::parse($reservationData->arrival_date)->formatLocalized('%A %d %B %Y')),
+                                    'resv_paytime' => strval(Carbon::parse($reservationData->updated_at)->formatLocalized('%A %d %B %Y')),
+                                    'status' => 100,
+                                    'mail_sender' => 2
+                                ]
+                            ]);
+                            $log = new botmail_request_log;
+                            $log->status = $reponse->getStatusCode();
+                            $log->message = $reponse->getBody(true);
+                            $log->save();
+                        }
+                    }
+                    
                 }
 
                 // $affiliateID = '571343950';
@@ -282,23 +361,8 @@ class ReservationController extends Controller
                 // ->throw()
                 // ->json();
 
-                // $client = new Client([
-                //     'headers' => ['Content-Type' => 'application/json']
-                // ]);
-
                 // $customer = customer::find($reservationData->customer_id);
                 // $reservationBill = $reservationData->bill;
-                // if ((double)$grossAmount === $reservationBill) {
-                //     $responseMail = $client->post('https://botmail.salokapark.app/api/data/reservasi', [
-                //         'json' => [
-                //             'name' => $customer->name,
-                //             'booking_code' => $bookingCode,
-                //             'email' => $customer->email,
-                //             'arrival' => $reservationData->arrival_date,
-                //             'status' => 100,
-                //         ]
-                //     ]);
-                // }
 
                 // if(is_null($reservationData->zeals_code)){
                 //     //

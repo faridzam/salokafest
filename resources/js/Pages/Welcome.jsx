@@ -547,6 +547,9 @@ export default function Welcome(props) {
                                                     width: '90%',
                                                 }}>
                                                     <Typography
+                                                    sx={{
+                                                        fontSize: '14px',
+                                                    }}
                                                     textAlign={'center'}>
                                                         Saloka Theme Park presents : Saloka Fest – Music & Art 2023
                                                         Konser Festival bertema Music & Art ini akan dilaksanakan selama 4 hari, dari tanggal 22 – 25 Juni
@@ -703,10 +706,17 @@ export default function Welcome(props) {
                     }
                 </div>
             </Zoom>
-            <Helmet>
+            {/* sandbox */}
+            {/* <Helmet>
                 <script type="text/javascript"
                 src="https://app.sandbox.midtrans.com/snap/snap.js"
                 data-client-key="SB-Mid-client-nxEqAslc-ufQu9az"></script>
+            </Helmet> */}
+            {/* production */}
+            <Helmet>
+                <script type="text/javascript"
+                src="https://app.midtrans.com/snap/snap.js"
+                data-client-key="Mid-client-lYBi_CM3a6fBcx3w"></script>
             </Helmet>
         </>
     );
