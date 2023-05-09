@@ -429,7 +429,8 @@ export default function App(props) {
                         }}>
                             <ArrowBackIos
                             sx={{
-                                fontSize: 28,
+                                left: '10px',
+                                fontSize: 18,
                                 fontWeight: 600,
                                 color: 'primary.main'
                             }}/>
@@ -447,7 +448,7 @@ export default function App(props) {
                         }}>
                             <ArrowForwardIos
                             sx={{
-                                fontSize: 28,
+                                fontSize: 18,
                                 fontWeight: 600,
                                 color: 'primary.main'
                             }}/>

@@ -27,6 +27,7 @@ import { FreeMode, Scrollbar, Mousewheel } from "swiper";
 import {media} from '../../assets/images';
 import {mediaBanner} from '../../assets/images/banner';
 import {mediaSold} from '../../assets/images/soldOutLabel';
+import {mediaSalokafest} from '../../assets/images/salokafest';
 
 const StockAlert = React.forwardRef(function StockAlert(props, ref) {
     return <Alert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -84,13 +85,23 @@ export default function App(props) {
     const CONTENT_COUNT = tickets.length;
     const tickets_content = Array.from(Array(CONTENT_COUNT).keys());
 
+    const [isTicketLoading, setIsTicketLoading] = React.useState(false);
+
     const handleAddTicket = async (e, data) => {
         e.preventDefault();
-        await props.addTicket(data);
+        if(!isTicketLoading){
+            setIsTicketLoading(true);
+            await props.addTicket(data);
+            setIsTicketLoading(false);
+        }
     }
     const handleSubTicket = async (e, data) => {
         e.preventDefault();
-        await props.subTicket(data);
+        if(!isTicketLoading){
+            setIsTicketLoading(true);
+            await props.subTicket(data);
+            setIsTicketLoading(false);
+        }
     }
 
     const handleCheckoutButton = () => {
@@ -298,7 +309,7 @@ export default function App(props) {
 
     const [midtransSnapToken, setMidtransSnapToken] = React.useState(false);
     const [loadingBayar, sestLoadingBayar] = React.useState(false);
-    const handleBayar = async (e) => {
+    const handleBayar = (e) => {
         e.preventDefault();
         sestLoadingBayar(true);
         //
@@ -310,6 +321,7 @@ export default function App(props) {
                     onSuccess: function(result){
                         sestLoadingBayar(false);
                         console.log('success');console.log(result);
+                        window.location.href = `https://salokafest.salokapark.com/success`
                     },
                     onPending: function(result){
                         sestLoadingBayar(false);
@@ -326,7 +338,7 @@ export default function App(props) {
                 }
             )
         } else {
-            await axios.post('/api/create-reservation', {
+            axios.post('/api/create-reservation', {
                 event_id: props.selectedEvent.id,
                 session_id: props.sessionID,
                 name: name,
@@ -345,6 +357,7 @@ export default function App(props) {
                         onSuccess: function(result){
                             sestLoadingBayar(false);
                             console.log('success');console.log(result);
+                            window.location.href = `https://salokafest.salokapark.com/success`
                         },
                         onPending: function(result){
                             sestLoadingBayar(false);
@@ -918,9 +931,16 @@ export default function App(props) {
                                                 width: '100%',
                                                 height: '100%',
                                             }}>
-                                                <Typography>
-                                                    gambar
-                                                </Typography>
+                                                <img
+                                                src={mediaSalokafest[12]}
+                                                alt="salokafest_image"
+                                                loading="lazy"
+                                                style={{
+                                                    layout: 'fill',
+                                                    objectFit: 'contain',
+                                                    objectPosition: 'center',
+                                                    height: '100%',
+                                                }}></img>
                                             </Box>
                                         </Grid>
                                     </Grid>
@@ -1339,7 +1359,7 @@ export default function App(props) {
                                     alignItems: 'center',
                                 }}>
                                     <Button
-                                    onClick={() => window.location.href = 'https://salokapark.com/ticket/pilih-ticket'}
+                                    onClick={() => window.location.href = 'https://salokapark.com/ticket/pilih-ticket?date=2023-06-21T17:00:00.000Z'}
                                     variant='contained'
                                     sx={{
                                         borderRadius: '30px',
@@ -1509,7 +1529,7 @@ export default function App(props) {
                                                         alignItems: 'center',
                                                     }}>
                                                         <Fab
-                                                        onClick={(e) => handleSubTicket(e, tickets[index])}
+                                                        onClick={async (e) => await handleSubTicket(e, tickets[index])}
                                                         onDoubleClick={null}
                                                         size="small"
                                                         variant='outlined'
@@ -1533,7 +1553,7 @@ export default function App(props) {
                                                             fontWeight: 600
                                                         }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
                                                         <Fab
-                                                        onClick={(e) => handleAddTicket(e, tickets[index])}
+                                                        onClick={async (e) => await handleAddTicket(e, tickets[index])}
                                                         onDoubleClick={null}
                                                         size="small"
                                                         variant='outlined'
@@ -1886,7 +1906,7 @@ export default function App(props) {
                                             props.selectedEvent.id === 1
                                             ?
                                             <Button
-                                            onClick={() => window.location.href = 'https://salokapark.com/ticket/pilih-ticket'}
+                                            onClick={() => window.location.href = 'https://salokapark.com/ticket/pilih-ticket?date=2023-06-21T17:00:00.000Z'}
                                             variant='contained'
                                             sx={{
                                                 width: '100%',
@@ -2061,7 +2081,7 @@ export default function App(props) {
                                                         alignItems: 'center',
                                                     }}>
                                                         <Fab
-                                                        onClick={(e) => handleSubTicket(e, tickets[index])}
+                                                        onClick={async (e) => await handleSubTicket(e, tickets[index])}
                                                         onDoubleClick={null}
                                                         size="small"
                                                         variant='outlined'
@@ -2087,7 +2107,7 @@ export default function App(props) {
                                                             }}>{props.selectedTicket.filter(e => e.id === tickets[index].id).length > 0 ? props.selectedTicket.find(e => e.id === tickets[index].id).qty.toString() : 0}</Typography>
                                                         </Box>
                                                         <Fab
-                                                        onClick={(e) => handleAddTicket(e, tickets[index])}
+                                                        onClick={async (e) => await handleAddTicket(e, tickets[index])}
                                                         onDoubleClick={null}
                                                         size="small"
                                                         variant='outlined'
@@ -2546,7 +2566,7 @@ export default function App(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDialogClose}>close</Button>
-                    <Button onClick={handleBayar} onDoubleClick={null} autoFocus>
+                    <Button onClick={loadingBayar ? null : handleBayar} onDoubleClick={null} autoFocus>
                         next
                     </Button>
                 </DialogActions>

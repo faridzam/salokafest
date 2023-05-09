@@ -37,4 +37,10 @@ Route::post('check-session', [SessionQueueController::class, 'checkSession']);
 Route::post('midtrans-notif-handler', [ReservationController::class, 'midtransNotificationHandler']);
 
 // check botmail
-Route::post('check-botmail', [CheckBotmail::class, 'checkBotmail']);
+// Route::post('check-botmail', [CheckBotmail::class, 'checkBotmail']);
+
+// loop session
+// Route::post('loop-session', [SessionQueueController::class, 'loopCreateSession']);
+
+// loop Email
+// Route::post('loop-email', [ReservationController::class, 'LoopEmail']);

@@ -10,6 +10,7 @@ import LogoSalokafestBlackHDPI from "./logo_salokafest_blackhdpi.png";
 import LogoSalokafestBlackXHDPI from "./logo_salokafest_blackxhdpi.png";
 import LogoSalokafestBlackXXHDPI from "./logo_salokafest_blackxxhdpi.png";
 import LogoSalokafestBlackXXXHDPI from "./logo_salokafest_blackxxxhdpi.png";
+import eTicketImage from "./eticket_salokapark.png";
 
 export const mediaSalokafest = [
     LogoSalokafestLDPI,
@@ -24,4 +25,5 @@ export const mediaSalokafest = [
     LogoSalokafestBlackXHDPI,
     LogoSalokafestBlackXXHDPI,
     LogoSalokafestBlackXXXHDPI,
+    eTicketImage
 ];

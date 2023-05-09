@@ -37,7 +37,7 @@ export default function Ticket(props) {
         window.location.href = route
     }
 
-    const [countdownDate, setCountdownDate] = React.useState(new Date('05/10/2023').getTime());
+    const [countdownDate, setCountdownDate] = React.useState(new Date('05/10/2023 09:00:00').getTime());
 
     const [state, setState] = React.useState({
         days: 0,
@@ -262,7 +262,7 @@ export default function Ticket(props) {
                                     color: 'white.main',
                                     marginTop: '10px',
                                 }}>
-                                    *Pembelian tiket dapat dilakukan tanggal 10 Mei 2023 pukul 10.00 WIB
+                                    *Pembelian tiket dapat dilakukan tanggal 10 Mei 2023 pukul 09.00 WIB
                                 </Typography>
                             </Box>
                         </Grid>

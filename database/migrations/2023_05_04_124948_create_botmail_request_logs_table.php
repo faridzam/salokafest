@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('botmail_request_logs', function (Blueprint $table) {
             $table->id();
             $table->string('status')->nullable();
-            $table->string('message')->nullable();
+            $table->longText('message')->nullable();
             $table->timestamps();
         });
     }

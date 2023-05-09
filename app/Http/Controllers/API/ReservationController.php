@@ -38,7 +38,7 @@ class ReservationController extends Controller
         $this->isSanitized = true;
         $this->is3ds = true;
         $this->appendNotifUrl = "https://example.com/test1,https://example.com/test2";
-        $this->overrideNotifUrl = "https://salokafest-staging.salokapark.com/api/midtrans-notif-handler";
+        $this->overrideNotifUrl = "https://salokafest.salokapark.com/api/midtrans-notif-handler";
     }
 
     public function createReservation(Request $request){
@@ -84,7 +84,7 @@ class ReservationController extends Controller
         $reservation = reservation::create([
             'customer_id' => $customer->id,
             'event_id' => $request->event_id,
-            'order_id' => "sf-test-local-3".$customer->id.Carbon::now()->format('y').sprintf('%05d', substr(strval($sex), -5)),
+            'order_id' => "sf-".$customer->id.Carbon::now()->format('y').sprintf('%05d', substr(strval($sex), -5)),
             'arrival_date' => $bookingDate,
             'bill' => $totalBill,
             'status' => "created",
@@ -115,7 +115,7 @@ class ReservationController extends Controller
 
             }
         };
-        $expireInMinutes = 5;
+        $expireInMinutes = 10;
 
         $params = array(
             'transaction_details' => array(
@@ -153,6 +153,7 @@ class ReservationController extends Controller
         }
 
         return response()->json([
+            'id' => $reservation->id,
             'token' => $reservation->snap_token,
             'total_bill' => $totalBill,
         ]);
@@ -395,11 +396,9 @@ class ReservationController extends Controller
                 ->update([
                     'status' => 'pending',
                 ]);
-
                 $reservationData = reservation::where('order_id', $order_id)->first();
                 $reservationTicket = reservation_ticket::where('reservation_id', $reservationData->id)
                 ->get();
-
                 foreach ($reservationTicket as $key => $value) {
 
                     $stock = stock::where('ticket_id', $value->ticket_id)->first();
@@ -432,23 +431,25 @@ class ReservationController extends Controller
             }
             else if ($transaction == 'expire') {
                 // TODO set payment status in merchant's database to 'expire'
-                $reservation = reservation::where('order_id', $order_id)
-                ->update([
-                    'status' => 'expire',
-                ]);
 
                 $reservationData = reservation::where('order_id', $order_id)->first();
                 $reservationTicket = reservation_ticket::where('reservation_id', $reservationData->id)
                 ->get();
 
-                foreach ($reservationTicket as $key => $value) {
-
-                    $stock = stock::where('ticket_id', $value->ticket_id)->first();
-                    $stock_update = stock::find($stock->id);
-                    $stock_update->stock_pending -= $value->qty;
-                    $stock_update->stock_available += $value->qty;
-                    $stock_update->update();
+                if($reservationData->status === 'pending'){
+                    foreach ($reservationTicket as $key => $value) {
+                        $stock = stock::where('ticket_id', $value->ticket_id)->first();
+                        $stock_update = stock::find($stock->id);
+                        $stock_update->stock_pending -= $value->qty;
+                        $stock_update->stock_available += $value->qty;
+                        $stock_update->update();
+                    }
                 }
+
+                $reservation = reservation::where('order_id', $order_id)
+                ->update([
+                    'status' => 'expire',
+                ]);
 
             }
             else if ($transaction == 'cancel') {
@@ -472,5 +473,57 @@ class ReservationController extends Controller
                 }
             }
 
+    }
+
+
+    public function LoopEmail(Request $request) {
+
+        $client = new Client([
+            'headers' => [
+                'User-Agent' => 'postman-request',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ]
+        ]);
+        for ($i=0 ; $i <= 500; $i++) {
+            $response = $client->post('https://botmail.salokapark.app/api/data/salokafest', [
+                'json' => [
+                    'event_name' => "sunatan",
+                    'ticket_type' => "sunatan",
+                    'event_date' => "sunatan",
+                    'event_time' => "sunatan",
+                    'event_subtitle' =>"sunatan",
+                    'ticket_qty' => "sunatan",
+                    'invoice' => "sunatan",
+                    'cust_name' =>"sunatan",
+                    'email' => "skinel123@gmail.com",
+                    'qrcode' => "sunatan",
+                    'resv_date' => "sunatan",
+                    'resv_paytime' => "sunatan",
+                    'status' => 100,
+                    'mail_sender' => 1
+                ]
+            ]);
+        }
+        for ($i=0 ; $i >= 500; $i++) {
+            $response = $client->post('https://botmail.salokapark.app/api/data/salokafest', [
+                'json' => [
+                    'event_name' => "sunatan",
+                    'ticket_type' => "sunatan",
+                    'event_date' => "sunatan",
+                    'event_time' => "sunatan",
+                    'event_subtitle' =>"sunatan",
+                    'ticket_qty' => "sunatan",
+                    'invoice' => "sunatan",
+                    'cust_name' =>"sunatan",
+                    'email' => "mishbahul09munir@gmail.com",
+                    'qrcode' => "sunatan",
+                    'resv_date' => "sunatan",
+                    'resv_paytime' => "sunatan",
+                    'status' => 100,
+                    'mail_sender' => 2
+                ]
+            ]);
+        }
     }
 }

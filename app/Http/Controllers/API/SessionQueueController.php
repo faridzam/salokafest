@@ -41,4 +41,16 @@ class SessionQueueController extends Controller
             'session_created' => $session_created,
         ]);
     }
+
+    public function loopCreateSession(Request $request){
+        //
+        for ($k = 0 ; $k >= 500; $k++){
+            $session_queue = session_queue::create([
+                'session_id' => $k,
+                'session_ex' => Carbon::now(),
+                'public_ip' => $request->ip(),
+                'isActive' => 1,
+            ]);
+        }
+    }
 }

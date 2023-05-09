@@ -497,12 +497,13 @@ export default function Welcome(props) {
                                 style={{
                                     layout: 'fill',
                                     objectFit: 'cover',
-                                    objectPosition: 'center',
+                                    objectPosition: 'bottom',
                                     width: '100%',
                                     height: '100%',
                                 }}
                                 // src={selectedEvent.image ? `${import.meta.env.VITE_MAIN_URL+selectedEvent.image}` : mediaBanner[1]}
-                                src={selectedEvent.image ? getImageByID(selectedEvent.id).image : mediaBanner[1]}
+                                // src={selectedEvent.image ? getImageByID(selectedEvent.id).image : mediaBanner[2]}
+                                src={mediaBanner[2]}
                                 alt="main-banner"/>
                             </Box>
 
@@ -646,14 +647,15 @@ export default function Welcome(props) {
                             }}>
                                 <img
                                 // src={selectedEvent.image ? `${import.meta.env.VITE_MAIN_URL+selectedEvent.image}` : mediaBanner[1]}
-                                src={selectedEvent.image ? getImageByID(selectedEvent.id).image : mediaBanner[1]}
+                                // src={selectedEvent.image ? getImageByID(selectedEvent.id).image : mediaBanner[3]}
+                                src={mediaBanner[3]}
                                 alt="banner_salokafest"
                                 loading="lazy"
                                 style={
                                     {
                                         layout: 'fill',
                                         objectFit: 'cover',
-                                        objectPosition: 'center',
+                                        objectPosition: 'bottom',
                                         width: '100%',
                                         height: '100%',
                                         transition: 'all .5s ease-in-out',

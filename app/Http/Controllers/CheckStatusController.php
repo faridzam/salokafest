@@ -28,7 +28,7 @@ class CheckStatusController extends Controller
             $reservations = reservation::query()
             ->when($search, function($query, $search) use($customer){
                 $query->whereIn('customer_id', $customer);
-            })->paginate(5)->through(function ($reservation) {
+            })->paginate(15)->through(function ($reservation) {
                 $customer = customer::find($reservation->customer_id);
                 $payment_method = payment_method::find($reservation->payment_method_id);
                 $event = event::find($reservation->event_id);
@@ -54,31 +54,25 @@ class CheckStatusController extends Controller
                 'search' => '',
             ];
         }
+
+        if ($request->query('selectedID')) {
+            $reservation = reservation::with('customer', 'payment_method', 'event')->find($request->query('selectedID'));
+            $reservation_ticket = reservation_ticket::where('reservation_id', $reservation->id)->get();
+
+            $filter['selectedID'] = $request->query('selectedID');
+        } else {
+            //
+            $reservation = [];
+            $reservation_ticket = [];
+            $filter['selectedID'] = '';
+        }
+
         return Inertia::render('CheckStatus/CheckStatus', [
             'reservations' => $reservations,
+            'reservationDetail' => $reservation,
+            'reservation_ticket' => $reservation_ticket,
             'filter' => $filter
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -89,40 +83,10 @@ class CheckStatusController extends Controller
      */
     public function show($id)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return Inertia::render('CheckStatus/CheckStatus', [
+            'reservation' => $reservation,
+            'reservation_ticket' => $reservation_ticket
+        ]);
     }
 }

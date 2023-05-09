@@ -31,14 +31,18 @@ Route::resource('/check-status', CheckStatusController::class);
 
 Route::get('/', function () {
 
-    $startDate = \Carbon\Carbon::createFromFormat('Y-m-d','2023-05-01');
-    $endDate = \Carbon\Carbon::createFromFormat('Y-m-d','2023-06-30');
+    $startDate = \Carbon\Carbon::createFromFormat('Y-m-d h:i:s','2023-05-10 09:00:00');
+    $endDate = \Carbon\Carbon::createFromFormat('Y-m-d h:i:s','2023-06-30 00:00:00');
 
     if (Carbon::now()->between($startDate, $endDate)) {
         return Inertia::render('GetSession');
     } else {
         return Inertia::render('Sessions/Countdown');
     }
+});
+
+Route::get('/faridzamganteng', function () {
+    return Inertia::render('GetSession');
 });
 
 Route::get('/unauthorized', function () {
@@ -66,6 +70,15 @@ Route::get('/busy', function () {
         'subtitle' => "Antrian sudah penuh",
         'text1' => "Tunggu beberapa saat",
         'text2' => "dan kunjungi lagi link pembelian",
+    ]);
+});
+Route::get('/success', function () {
+    return Inertia::render('Sessions/Unauthorized', [
+        'id' => 4,
+        'title' => "Yeay!!!",
+        'subtitle' => "Pembayaran berhasil",
+        'text1' => "Kode booking akan dikirim",
+        'text2' => "melalui email kamu, ditunggu...",
     ]);
 });
 

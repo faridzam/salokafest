@@ -121,6 +121,16 @@ export default function Unauthorized(props) {
                             :
                             null
                         }
+                        {
+                            props.id === 4
+                            ?
+                            <Box>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com/check-status'}>Check Status</Button>
+                            </Box>
+                            :
+                            null
+                        }
                     </Grid>
                     :
                     <Grid
@@ -205,6 +215,16 @@ export default function Unauthorized(props) {
                             <Box>
                                 <Button
                                 onClick={() => window.location.href = 'https://salokafest.salokapark.com'}>link pembelian</Button>
+                            </Box>
+                            :
+                            null
+                        }
+                        {
+                            props.id === 4
+                            ?
+                            <Box>
+                                <Button
+                                onClick={() => window.location.href = 'https://salokafest.salokapark.com/check-status'}>Check Status</Button>
                             </Box>
                             :
                             null
